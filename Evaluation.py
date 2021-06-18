@@ -48,7 +48,7 @@ class synthsonic(sv.OverSampling) :
         self.distinct_threshold = distinct_threshold
         self.n_jobs = n_jobs
 
-        self.set_random_state(random_state)
+        self.random_state = random_state
         
     @classmethod
     def parameter_combinations(cls, raw=False) :
@@ -72,7 +72,9 @@ class synthsonic(sv.OverSampling) :
         print(f"minority class {self.min_label}, min dataset {self.X_min.shape}")
         
         # fit model
-        kde = KDECopulaNNPdf(distinct_threshold=self.distinct_threshold)
+        kde = KDECopulaNNPdf(distinct_threshold=self.distinct_threshold,
+                             numerical_columns=[],
+                             categorical_columns=[])
         kde = kde.fit(self.X_min)
         
         # determine n_samples
