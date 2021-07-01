@@ -24,7 +24,7 @@ from Evaluation import synthsonic
 
 from sklearn.preprocessing import StandardScaler, LabelEncoder
 from sklearn.decomposition import PCA
-from imblearn.over_sampling import RandomOverSampler
+from imblearn.over_sampling import RandomOverSampler, SMOTENC, SVMSMOTE
 
 # metrics 
 from imblearn.metrics import geometric_mean_score, classification_report_imbalanced
@@ -155,9 +155,9 @@ if __name__== "__main__" :
 
     datasets = fetch_datasets()
     sets = list(datasets.keys())
-    oversamplers = [RandomOverSampler]#sv.SMOTE, sv.Borderline_SMOTE1, sv.ADASYN, sv.polynom_fit_SMOTE, sv.SVM_balance, sv.Random_SMOTE]
+    oversamplers = [RandomOverSampler, SMOTENC, SVMSMOTE, synthsonic]
     props = [0.3, 0.5, 0.7, 0.9, 1]
-    outputfile = "randomOversampling"
+    outputfile = "total_results"
 
     df = tester(outputfile, sets, oversamplers, props)
 
