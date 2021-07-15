@@ -1,24 +1,14 @@
 import numpy as np
+import pandas as pd
 import matplotlib.pyplot as plt
 import smote_variants as sv
-import imbalanced_databases as imbd
-import pandas as pd
 import time
 import logging
-
 from collections import Counter
-
 from imblearn.datasets import fetch_datasets
-from imblearn.metrics import geometric_mean_score
-from imblearn.metrics import classification_report_imbalanced
-
 from synthsonic.models.kde_copula_nn_pdf import KDECopulaNNPdf
-
-
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import StandardScaler, LabelEncoder
-from sklearn.tree import DecisionTreeClassifier
-from sklearn.neighbors import KNeighborsClassifier
 from sklearn.decomposition import PCA
 
 _logger = logging.getLogger('smote_variants')
@@ -35,20 +25,17 @@ class synthsonic(sv.OverSampling) :
                  proportion=1.0,
                  distinct_threshold=-1,
                  do_PCA = True, 
-                 random_state=None) :
-        
+                 random_state=None,
+                 X_min = None) :
         
         super().__init__()
         
         self.check_greater_or_equal(proportion, "proportion", 0)
-        self.check_n_jobs(n_jobs, 'n_jobs')
-
         self.proportion = proportion
         self.distinct_threshold = distinct_threshold
-        self.n_jobs = n_jobs
         self.do_PCA = do_PCA
-
         self.random_state = random_state
+        self.X_min = []
         
     @classmethod
     def parameter_combinations(cls, raw=False) :
@@ -63,12 +50,8 @@ class synthsonic(sv.OverSampling) :
         _logger.info(self.__class__.__name__ + ": " +
                      "Running sampling via %s" % self.descriptor())
         
-        # Find minority class
-        # self.find_minority(X,y)
         self.class_label_statistics(X, y)
-        
         self.X_min = X[y == self.min_label]
-        
         
         # fit model
         kde = KDECopulaNNPdf(distinct_threshold=self.distinct_threshold,
@@ -81,7 +64,6 @@ class synthsonic(sv.OverSampling) :
         self.n_to_sample = self.det_n_to_sample(self.proportion,
                                            self.class_stats[self.maj_label],
                                            self.class_stats[self.min_label])
-
         
         # sample
         x1 = kde.sample_no_weights(n_samples=self.n_to_sample, mode='cheap')
@@ -97,6 +79,7 @@ class synthsonic(sv.OverSampling) :
             setattr(self, param, value)
 
     def get_params(self) :
+        
         return {'proportion': self.proportion, 
                 'distinct_threshold':self.distinct_threshold,
                 'random_state': self.random_state,

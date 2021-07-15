@@ -7,10 +7,8 @@ from imblearn.datasets import fetch_datasets
 from tqdm import tqdm
 from sv_synthsonic import synthsonic, load_data, pca_plot
 from pathlib import Path
-
 from sklearn.model_selection import cross_validate, train_test_split, StratifiedKFold
 from sklearn.pipeline import Pipeline
-
 
 # oversamplers
 from imblearn.over_sampling import RandomOverSampler, SMOTE, SMOTENC, SVMSMOTE, ADASYN, BorderlineSMOTE
@@ -26,8 +24,8 @@ from imblearn.metrics import geometric_mean_score, classification_report_imbalan
 from sklearn.metrics import (recall_score, roc_auc_score, confusion_matrix, precision_score, precision_recall_curve,
                              f1_score, balanced_accuracy_score, accuracy_score, auc)
 
-
 def analyse_dataset(dataset, n_splits) :
+    
     X,y,title = load_data(dataset)
 
     # categorical check
@@ -60,11 +58,8 @@ def analyse_dataset(dataset, n_splits) :
 
     return f_dict
 
-
 def configure_oversampler(dataset_info, oversampler, proportion) :
-    # give dataset info and set oversampler parameters 
 
-    # pass categorical indices to oversampler
     oversampler.categorical_features = dataset_info['cat_columns']
 
     # Turn off PCA when samples < features
@@ -74,8 +69,6 @@ def configure_oversampler(dataset_info, oversampler, proportion) :
     oversampler.sampling_strategy = oversampler.proportion = proportion
     
     return oversampler
-
-
 
 def cross_validate_oversampler(dataset, oversampler, proportion, n_splits, clf) :
 
@@ -91,7 +84,6 @@ def cross_validate_oversampler(dataset, oversampler, proportion, n_splits, clf) 
     # stratified cross validation
     kf = StratifiedKFold(n_splits=n_splits, shuffle=True, random_state=5)
     
-   
     balanced_accuracy = []
     G_mean = []
     f1 = []
@@ -147,7 +139,6 @@ def cross_validate_oversampler(dataset, oversampler, proportion, n_splits, clf) 
 
     return df
 
-
 if __name__ == "__main__" :
 
     random_state = 5
@@ -164,9 +155,12 @@ if __name__ == "__main__" :
                     sv.polynom_fit_SMOTE(random_state=random_state),
                     sv.Random_SMOTE(random_state=random_state)]
     proportions = np.array([0.2, 0.4, 0.6, 0.8, 1])
+
 fail = []
 temp_dfs = []
+
 for dataset in tqdm(datasets[4:], desc="dataset") :
+    
     print(f"analysing dataset {dataset}.")
     datasetdfs=[]
     # prepare and analyse data
@@ -175,8 +169,11 @@ for dataset in tqdm(datasets[4:], desc="dataset") :
     possible_proportions = proportions[proportions > dataset_info['min_proportion']]
 
     for oversampler in tqdm(oversamplers, desc="oversampler") :
+        
         print(f"Generating samples for {oversampler}.")
+        
         for proportion in possible_proportions :
+            
             try :
                 oversampler = configure_oversampler(dataset_info, oversampler, proportion)
 
@@ -186,14 +183,10 @@ for dataset in tqdm(datasets[4:], desc="dataset") :
             
             temp_dfs.append(cross_validate_oversampler(dataset, oversampler, proportion, n_splits, clf))
 
-    
-
-
     df2 = pd.concat(temp_dfs)
     df2.to_csv("/Users/tristenmarto/Documents/Studie/Thesis/Synthsonic_data_analysis/CSV_results/Cross_validation/Cache/"+dataset+"_cross_val_xgboost.csv", index=False)
 
 df = pd.concat(temp_dfs)
-
 df.to_csv("/Users/tristenmarto/Documents/Studie/Thesis/Synthsonic_data_analysis/CSV_results/Cross_validation/cross_val_xgboost.csv", index=False)
 
 print("Done")
