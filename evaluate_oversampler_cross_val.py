@@ -156,37 +156,40 @@ if __name__ == "__main__" :
                     sv.Random_SMOTE(random_state=random_state)]
     proportions = np.array([0.2, 0.4, 0.6, 0.8, 1])
 
-fail = []
-temp_dfs = []
+    fail = []
+    temp_dfs = []
+    currentpath=Path.cwd()
+    cachepath = currentpath.joinpath('CSV_results', 'Cross_validation', 'Cache')
+    respath = currentpath.joinpath('CSV_results', 'Cross_validation')
 
-for dataset in tqdm(datasets[4:], desc="dataset") :
-    
-    print(f"analysing dataset {dataset}.")
-    datasetdfs=[]
-    # prepare and analyse data
-    dataset_info = analyse_dataset(dataset, n_splits)
-
-    possible_proportions = proportions[proportions > dataset_info['min_proportion']]
-
-    for oversampler in tqdm(oversamplers, desc="oversampler") :
+    for dataset in tqdm(datasets[4:], desc="dataset") :
         
-        print(f"Generating samples for {oversampler}.")
-        
-        for proportion in possible_proportions :
+        print(f"analysing dataset {dataset}.")
+        datasetdfs=[]
+        # prepare and analyse data
+        dataset_info = analyse_dataset(dataset, n_splits)
+
+        possible_proportions = proportions[proportions > dataset_info['min_proportion']]
+
+        for oversampler in tqdm(oversamplers, desc="oversampler") :
             
-            try :
-                oversampler = configure_oversampler(dataset_info, oversampler, proportion)
-
-            except :
-                fail.append((dataset, oversampler, proportion))
-                continue
+            print(f"Generating samples for {oversampler}.")
             
-            temp_dfs.append(cross_validate_oversampler(dataset, oversampler, proportion, n_splits, clf))
+            for proportion in possible_proportions :
+                
+                try :
+                    oversampler = configure_oversampler(dataset_info, oversampler, proportion)
 
-    df2 = pd.concat(temp_dfs)
-    df2.to_csv("/Users/tristenmarto/Documents/Studie/Thesis/Synthsonic_data_analysis/CSV_results/Cross_validation/Cache/"+dataset+"_cross_val_xgboost.csv", index=False)
+                except :
+                    fail.append((dataset, oversampler, proportion))
+                    continue
+                
+                temp_dfs.append(cross_validate_oversampler(dataset, oversampler, proportion, n_splits, clf))
 
-df = pd.concat(temp_dfs)
-df.to_csv("/Users/tristenmarto/Documents/Studie/Thesis/Synthsonic_data_analysis/CSV_results/Cross_validation/cross_val_xgboost.csv", index=False)
+        df2 = pd.concat(temp_dfs)
+        df2.to_csv(cachepath.joinpath(f'{dataset}_cross_val.csv'), index=False)
 
-print("Done")
+    df = pd.concat(temp_dfs)
+    df.to_csv(respath.joinpath('cross_validation.csv'), index=False)
+
+    print("Done")
