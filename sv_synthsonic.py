@@ -54,10 +54,11 @@ class synthsonic(sv.OverSampling) :
         self.X_min = X[y == self.min_label]
         
         # fit model
-        kde = KDECopulaNNPdf(distinct_threshold=self.distinct_threshold,
-                             do_PCA=self.do_PCA,
-                             numerical_columns=[],
-                             categorical_columns=[])
+        kde = KDECopulaNNPdf(distinct_threshold = self.distinct_threshold,
+                             do_PCA = self.do_PCA,
+                             numerical_columns = [],
+                             categorical_columns = [],
+                             clf = None)
         kde.fit(self.X_min)
         
         # determine n_samples
