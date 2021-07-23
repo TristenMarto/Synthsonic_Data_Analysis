@@ -1,3 +1,4 @@
+from networkx.generators.classic import balanced_tree
 import numpy as np
 import matplotlib.pyplot as plt
 import pandas as pd
@@ -5,9 +6,10 @@ import time
 import logging
 from imblearn.datasets import fetch_datasets
 from tqdm import tqdm
-from sv_synthsonic import synthsonic, load_data, pca_plot
+from sv_synthsonic import synthsonic
+from handle_data import HandleData
 from pathlib import Path
-from sklearn.model_selection import cross_validate, train_test_split, StratifiedKFold
+from sklearn.model_selection import StratifiedKFold
 from sklearn.pipeline import Pipeline
 
 # oversamplers
@@ -24,63 +26,44 @@ from imblearn.metrics import geometric_mean_score, classification_report_imbalan
 from sklearn.metrics import (recall_score, roc_auc_score, confusion_matrix, precision_score, precision_recall_curve,
                              f1_score, balanced_accuracy_score, accuracy_score, auc)
 
-def analyse_dataset(dataset, n_splits) :
+def configure_oversampler(dataset_info, oversampler, proportion) :
+
+    oversampler.categorical_features = dataset_info['cat_columns']
+    oversampler.sampling_strategy = oversampler.proportion = proportion
+    if dataset_info['minority'] < dataset_info['features']:
+        oversampler.do_PCA = False
+        oversampler.ordering = ''
     
-    X,y,title = load_data(dataset)
+    return oversampler
 
-    # categorical check
-    cat_columns = []
-    num_columns = []
+def fit_predict(clf, X_train, X_test, y_train, y_test) :
 
-    for i in range(X.shape[1]) :
-        if len(np.unique(X[:,i])) < 20 :
-            cat_columns.append(i)
-
-        else :
-            num_columns.append(i)
-
-    v,c = np.unique(y,return_counts = True)
-    majority = c[0]
-    minority = c[1]
-    min_prop = minority/majority
-
+    clf.fit(X_train, y_train)
+    prediction = clf.predict(X_test)
+    probas = clf.predict_proba(X_test)[:,1]
+    pr, rec, _ = precision_recall_curve(y_test, probas)
+    
     f_dict = {
-        'title': title,
-        'samples': X.shape[0],
-        'features': X.shape[1],
-        'cat_columns': cat_columns,
-        'cat_features': len(cat_columns),
-        'num_columns': num_columns,
-        'num_features': len(num_columns),
-        'minority': minority,
-        'min_proportion': min_prop
+        'balanced_accuracy': balanced_accuracy_score(y_test, prediction),
+        'G_mean': geometric_mean_score(y_test, prediction),
+        'f1': f1_score(y_test, prediction, average='binary'),
+        'precision': precision_score(y_test, prediction),
+        'recall': recall_score(y_test, prediction),
+        'pr_auc': auc(rec,pr)
     }
 
     return f_dict
 
-def configure_oversampler(dataset_info, oversampler, proportion) :
-
-    oversampler.categorical_features = dataset_info['cat_columns']
-
-    # Turn off PCA when samples < features
-    if dataset_info['minority'] < dataset_info['features']:
-        oversampler.do_PCA = False 
-
-    oversampler.sampling_strategy = oversampler.proportion = proportion
-    
-    return oversampler
-
 def cross_validate_oversampler(dataset, oversampler, proportion, n_splits, clf) :
 
     df = pd.DataFrame({
-        'dataset':dataset, 
+        'dataset': dataset, 
         'oversampler': oversampler,
-        'proportion' : proportion},
+        'proportion': proportion},
          index=[0])
     
     # loading of dataset
-    X,y,_ = load_data(dataset)
-    
+    X,y,_ = HandleData().load_data(dataset)
     # stratified cross validation
     kf = StratifiedKFold(n_splits=n_splits, shuffle=True, random_state=5)
     
@@ -108,18 +91,13 @@ def cross_validate_oversampler(dataset, oversampler, proportion, n_splits, clf) 
             runtime = time.time() - start_time
 
         # fit, predict and score
-        clf.fit(X_g,y_g)
-        prediction = clf.predict(X_test)
-        probas = clf.predict_proba(X_test)[:,1]
-
-        pr, rec, _ = precision_recall_curve(y_test, probas)
-
-        balanced_accuracy.append(balanced_accuracy_score(y_test, prediction))
-        G_mean.append(geometric_mean_score(y_test, prediction))
-        f1.append(f1_score(y_test, prediction, average='binary'))
-        precision.append(precision_score(y_test, prediction))
-        recall.append(recall_score(y_test, prediction))
-        pr_auc.append(auc(rec,pr))
+        temp_res = fit_predict(clf, X_g, X_test, y_g, y_test)
+        balanced_accuracy.append(temp_res['balanced_accuracy'])
+        G_mean.append(temp_res['G_mean'])
+        f1.append(temp_res['f1'])
+        precision.append(temp_res['precision'])
+        recall.append(temp_res['recall'])
+        pr_auc.append(temp_res['pr_auc'])
         runtimes.append(runtime)
 
     df['balanced_accuracy'] = np.mean(balanced_accuracy)
@@ -139,7 +117,23 @@ def cross_validate_oversampler(dataset, oversampler, proportion, n_splits, clf) 
 
     return df
 
-if __name__ == "__main__" :
+def perform_tests(respath, datasets, oversamplers, proportions, n_splits, clf) :
+
+    temp_dfs = []
+
+    for dataset in tqdm(datasets, desc='dataset') :
+        dataset_info = HandleData().analyse_dataset(dataset, proportions)
+        for oversampler in oversamplers :
+            for proportion in dataset_info['possible_proportions'] :
+                oversampler = configure_oversampler(dataset_info, oversampler, proportion)
+                temp_dfs.append(cross_validate_oversampler(dataset, oversampler, proportion, n_splits, clf))
+
+    df = pd.concat(temp_dfs)
+    df.to_csv(respath.joinpath('cross_validation2.csv'), index=False)
+
+    return df
+
+def main() :
 
     random_state = 5
     n_splits = 5
@@ -147,11 +141,11 @@ if __name__ == "__main__" :
     datasets = list(fetch_datasets().keys())
     oversamplers = [RandomOverSampler(random_state=random_state), 
                     SMOTE(random_state=random_state, n_jobs=-1),
-                    # SMOTENC(random_state=random_state, n_jobs=-1), 
+                    SMOTENC(random_state=random_state, categorical_features = [], n_jobs=-1), 
                     SVMSMOTE(random_state=random_state, n_jobs=-1), 
                     ADASYN(random_state=random_state, n_jobs=-1), 
                     BorderlineSMOTE(random_state=random_state, n_jobs=-1),
-                    synthsonic(random_state=random_state, distinct_threshold=20),
+                    synthsonic(distinct_threshold=20),
                     sv.polynom_fit_SMOTE(random_state=random_state),
                     sv.Random_SMOTE(random_state=random_state)]
     proportions = np.array([0.2, 0.4, 0.6, 0.8, 1])
@@ -162,34 +156,9 @@ if __name__ == "__main__" :
     cachepath = currentpath.joinpath('CSV_results', 'Cross_validation', 'Cache')
     respath = currentpath.joinpath('CSV_results', 'Cross_validation')
 
-    for dataset in tqdm(datasets[4:], desc="dataset") :
-        
-        print(f"analysing dataset {dataset}.")
-        datasetdfs=[]
-        # prepare and analyse data
-        dataset_info = analyse_dataset(dataset, n_splits)
-
-        possible_proportions = proportions[proportions > dataset_info['min_proportion']]
-
-        for oversampler in tqdm(oversamplers, desc="oversampler") :
-            
-            print(f"Generating samples for {oversampler}.")
-            
-            for proportion in possible_proportions :
-                
-                try :
-                    oversampler = configure_oversampler(dataset_info, oversampler, proportion)
-
-                except :
-                    fail.append((dataset, oversampler, proportion))
-                    continue
-                
-                temp_dfs.append(cross_validate_oversampler(dataset, oversampler, proportion, n_splits, clf))
-
-        df2 = pd.concat(temp_dfs)
-        df2.to_csv(cachepath.joinpath(f'{dataset}_cross_val.csv'), index=False)
-
-    df = pd.concat(temp_dfs)
-    df.to_csv(respath.joinpath('cross_validation.csv'), index=False)
+    perform_tests(respath, datasets, oversamplers, proportions, n_splits, clf)
 
     print("Done")
+
+if __name__ == "__main__" :
+    main()
