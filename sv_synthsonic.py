@@ -20,8 +20,8 @@ class synthsonic(sv.OverSampling) :
                  do_PCA = True,
                  ordering = 'pca', 
                  X_min = None,
-                 numerical_columns = [],
-                 categorical_columns = [],
+                 numerical_features = [],
+                 categorical_features = [],
                  clf = None) :
         
         super().__init__()
@@ -34,15 +34,9 @@ class synthsonic(sv.OverSampling) :
         self.distinct_threshold = distinct_threshold
         self.do_PCA = do_PCA
         self.ordering = ordering
-        self.numerical_columns = numerical_columns
-        self.categorical_columns = categorical_columns
+        self.numerical_features = numerical_features
+        self.categorical_features = categorical_features
         self.clf = clf
-        self.kde = KDECopulaNNPdf(distinct_threshold = self.distinct_threshold,
-                                  do_PCA = self.do_PCA,
-                                  ordering = self.ordering,
-                                  numerical_columns = self.numerical_columns,
-                                  categorical_columns = self.categorical_columns,
-                                  clf = self.clf)
     
     @classmethod
     def parameter_combinations(cls, raw=False) :
@@ -64,11 +58,16 @@ class synthsonic(sv.OverSampling) :
                                                 self.class_stats[self.maj_label],
                                                 self.class_stats[self.min_label])
 
-        # fit 
-        self.kde.fit(self.X_min)
+        kde = KDECopulaNNPdf(distinct_threshold = self.distinct_threshold,
+                            do_PCA = self.do_PCA,
+                            ordering = self.ordering,
+                            numerical_columns = self.numerical_features,
+                            categorical_columns = self.categorical_features,
+                            clf = self.clf)
+        kde.fit(self.X_min)
         
         #sample
-        x1 = self.kde.sample_no_weights(n_samples=self.n_to_sample, mode='cheap')
+        x1 = kde.sample_no_weights(n_samples=self.n_to_sample, mode='cheap')
         X_samp = np.vstack([X,x1])
         y_samp = np.hstack([y, [self.min_label]*self.n_to_sample])
         
@@ -81,8 +80,6 @@ class synthsonic(sv.OverSampling) :
 
     def get_params(self) :
         
-        
-
         return {'proportion': self.proportion,
                 'distinct_threshold': self.distinct_threshold,
                 'do_PCA': self.do_PCA,

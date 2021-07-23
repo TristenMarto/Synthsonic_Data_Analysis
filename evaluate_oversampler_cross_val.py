@@ -29,6 +29,7 @@ from sklearn.metrics import (recall_score, roc_auc_score, confusion_matrix, prec
 def configure_oversampler(dataset_info, oversampler, proportion) :
 
     oversampler.categorical_features = dataset_info['cat_columns']
+    oversampler.numerical_features = dataset_info['num_columns']
     oversampler.sampling_strategy = oversampler.proportion = proportion
     if dataset_info['minority'] < dataset_info['features']:
         oversampler.do_PCA = False
@@ -117,47 +118,53 @@ def cross_validate_oversampler(dataset, oversampler, proportion, n_splits, clf) 
 
     return df
 
-def perform_tests(respath, datasets, oversamplers, proportions, n_splits, clf) :
+def perform_tests(respath, filename, datasets, oversamplers, proportions, n_splits, clf) :
 
     temp_dfs = []
 
     for dataset in tqdm(datasets, desc='dataset') :
         dataset_info = HandleData().analyse_dataset(dataset, proportions)
-        for oversampler in oversamplers :
+        for oversampler in tqdm(oversamplers, desc='oversampler') :
             for proportion in dataset_info['possible_proportions'] :
                 oversampler = configure_oversampler(dataset_info, oversampler, proportion)
                 temp_dfs.append(cross_validate_oversampler(dataset, oversampler, proportion, n_splits, clf))
 
     df = pd.concat(temp_dfs)
-    df.to_csv(respath.joinpath('cross_validation2.csv'), index=False)
+    df.to_csv(respath.joinpath(filename), index=False)
 
     return df
 
 def main() :
 
     random_state = 5
-    n_splits = 5
+    n_splits = 4
     clf = XGBClassifier(verbosity=0, use_label_encoder=False)
-    datasets = list(fetch_datasets().keys())
+    # datasets = list(fetch_datasets().keys())
+    # cross validation categorical datasets
+    datasets = ['optical_digits',
+                'car_eval_34',
+                'solar_flare_m0',
+                'car_eval_4',
+                'letter_img',
+                'webpage']
     oversamplers = [RandomOverSampler(random_state=random_state), 
                     SMOTE(random_state=random_state, n_jobs=-1),
-                    SMOTENC(random_state=random_state, categorical_features = [], n_jobs=-1), 
                     SVMSMOTE(random_state=random_state, n_jobs=-1), 
                     ADASYN(random_state=random_state, n_jobs=-1), 
                     BorderlineSMOTE(random_state=random_state, n_jobs=-1),
                     synthsonic(distinct_threshold=20),
                     sv.polynom_fit_SMOTE(random_state=random_state),
-                    sv.Random_SMOTE(random_state=random_state)]
-    proportions = np.array([0.2, 0.4, 0.6, 0.8, 1])
-
+                    sv.Random_SMOTE(random_state=random_state),
+                    sv.noSMOTE()]
+    proportions = np.array([0.2, 0.4, 0.6, 0.8, 1.])
     fail = []
     temp_dfs = []
     currentpath=Path.cwd()
     cachepath = currentpath.joinpath('CSV_results', 'Cross_validation', 'Cache')
     respath = currentpath.joinpath('CSV_results', 'Cross_validation')
+    filename = "cross_validation_categorical.csv"
 
-    perform_tests(respath, datasets, oversamplers, proportions, n_splits, clf)
-
+    perform_tests(respath, filename, datasets, oversamplers, proportions, n_splits, clf)
     print("Done")
 
 if __name__ == "__main__" :
