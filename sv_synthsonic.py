@@ -1,15 +1,8 @@
 import numpy as np
 import pandas as pd
-import matplotlib.pyplot as plt
 import smote_variants as sv
-import time
 import logging
-from collections import Counter
-from imblearn.datasets import fetch_datasets
 from synthsonic.models.kde_copula_nn_pdf import KDECopulaNNPdf
-from sklearn.pipeline import Pipeline
-from sklearn.preprocessing import StandardScaler, LabelEncoder
-from sklearn.decomposition import PCA
 
 _logger = logging.getLogger('smote_variants')
 _logger.setLevel(logging.DEBUG)
@@ -24,19 +17,33 @@ class synthsonic(sv.OverSampling) :
     def __init__(self,
                  proportion=1.0,
                  distinct_threshold=-1,
-                 do_PCA = True, 
-                 random_state=None,
-                 X_min = None) :
+                 do_PCA = True,
+                 ordering = 'pca', 
+                 X_min = None,
+                 numerical_columns = [],
+                 categorical_columns = [],
+                 clf = None) :
         
         super().__init__()
         
         self.check_greater_or_equal(proportion, "proportion", 0)
         self.proportion = proportion
-        self.distinct_threshold = distinct_threshold
-        self.do_PCA = do_PCA
-        self.random_state = random_state
         self.X_min = []
         
+        # Synthsonic parameters
+        self.distinct_threshold = distinct_threshold
+        self.do_PCA = do_PCA
+        self.ordering = ordering
+        self.numerical_columns = numerical_columns
+        self.categorical_columns = categorical_columns
+        self.clf = clf
+        self.kde = KDECopulaNNPdf(distinct_threshold = self.distinct_threshold,
+                                  do_PCA = self.do_PCA,
+                                  ordering = self.ordering,
+                                  numerical_columns = self.numerical_columns,
+                                  categorical_columns = self.categorical_columns,
+                                  clf = self.clf)
+    
     @classmethod
     def parameter_combinations(cls, raw=False) :
         
@@ -50,25 +57,18 @@ class synthsonic(sv.OverSampling) :
         _logger.info(self.__class__.__name__ + ": " +
                      "Running sampling via %s" % self.descriptor())
         
+        # determine minority and majority class
         self.class_label_statistics(X, y)
         self.X_min = X[y == self.min_label]
-        
-        # fit model
-        kde = KDECopulaNNPdf(distinct_threshold = self.distinct_threshold,
-                             do_PCA = self.do_PCA,
-                             numerical_columns = [],
-                             categorical_columns = [],
-                             clf = None)
-        kde.fit(self.X_min)
-        
-        # determine n_samples
         self.n_to_sample = self.det_n_to_sample(self.proportion,
-                                           self.class_stats[self.maj_label],
-                                           self.class_stats[self.min_label])
+                                                self.class_stats[self.maj_label],
+                                                self.class_stats[self.min_label])
+
+        # fit 
+        self.kde.fit(self.X_min)
         
-        # sample
-        x1 = kde.sample_no_weights(n_samples=self.n_to_sample, mode='cheap')
-        
+        #sample
+        x1 = self.kde.sample_no_weights(n_samples=self.n_to_sample, mode='cheap')
         X_samp = np.vstack([X,x1])
         y_samp = np.hstack([y, [self.min_label]*self.n_to_sample])
         
@@ -81,58 +81,9 @@ class synthsonic(sv.OverSampling) :
 
     def get_params(self) :
         
-        return {'proportion': self.proportion, 
-                'distinct_threshold':self.distinct_threshold,
-                'random_state': self.random_state,
-                'do_PCA': self.do_PCA}
-    
+        
 
-
-def writetodict(dataset,name) :
-    
-    data = dataset.iloc[:,:-1].values
-    target = dataset.iloc[:,-1].values
-
-    return {'data':data,
-            'target':target,
-            'name':name}
-    
-def load_data(name) :
-    
-    datasets = fetch_datasets()
-
-    data = datasets[name]
-
-    X,y,title = data['data'], data['target'], data['DESCR']
-    
-    le = LabelEncoder()
-    y_enc = le.fit_transform(y)
-
-    return X, y_enc, title
-
-
-def pca_plot(X,y) :
-    
-    x = StandardScaler().fit_transform(X)
-
-    pca = PCA(n_components=2)
-    principalComponents = pca.fit_transform(x)
-    principalDf = pd.DataFrame(data = principalComponents
-                 , columns = ['principal component 1', 'principal component 2'])
-    
-    fig = plt.figure(figsize = (12,7))
-    ax = fig.add_subplot(1,1,1) 
-    ax.set_xlabel('Principal Component 1')
-    ax.set_ylabel('Principal Component 2')
-    ax.set_title(f'2 component PCA')
-
-    counter = Counter(y)
-
-    for label, _ in counter.items() :
-        rowix = np.where(y == label)[0]
-        ax.scatter(principalComponents[rowix, 0], principalComponents[rowix, 1], label=str(label))
-
-    ax.legend()
-
-    fig.show()
-    print(counter)
+        return {'proportion': self.proportion,
+                'distinct_threshold': self.distinct_threshold,
+                'do_PCA': self.do_PCA,
+                'ordering': self.ordering}
