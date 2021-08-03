@@ -1,0 +1,16 @@
+\lhead{Chapter 2 - Theory}
+
+\section{Theory}
+
+\subsection{Synthsonic}
+
+Synthsonic consists out of multiple reversible transformations of features. It can handle both numerical and categorical features, and will split a dataset $X$ into a numerical and categorical set, so that $X = (X_{num}, X_{cat})$. Modeling of the dataset happens in five steps:
+
+\begin{enumerate}
+    \item Numerical features are transformed into uniformly distributed ones, using invertible steps, from which the first-order correlations have been removed.
+    \item Categorical and discretized numerical features are jointly modeled with a Bayesian network.
+    \item Specific features can be selected for additional modeling.
+    \item A discriminative learner is trained to model the residual discrepancies observed between the input data and the Bayesian network.
+    \item The discriminative learner is calibrated to reweight synthetic data from the Bayesian network.
+\end{enumerate}
+
