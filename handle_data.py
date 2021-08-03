@@ -63,15 +63,21 @@ class HandleData :
 
         return majority, minority, min_prop
 
-    def analyse_dataset(self, dataset, proportions) :
+    def label_encode(self, df, columns) :
+
+        for label in columns :
+            df[label] = LabelEncoder().fit_transform(df[label])
+
+        return df
+
+    def analyse_dataset(self, X, y, dataset_name, proportions) :
         
-        X,y,title = self.load_data(dataset)
         cat_columns, num_columns = self.divide_num_cat(X, 20)
         majority, minority, min_prop = self.find_min_maj(y)
         possible_props = proportions[proportions > min_prop] 
 
         f_dict = {
-            'title': title,
+            'title': dataset_name,
             'samples': X.shape[0],
             'features': X.shape[1],
             'cat_columns': cat_columns,
