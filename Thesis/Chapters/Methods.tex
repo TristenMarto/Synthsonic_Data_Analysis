@@ -1,0 +1,96 @@
+\lhead{\emph{Methods}}
+
+This section describes the methods used in this thesis. Several terms and metrics will be introduced to the reader which are important to the understanding of the experiments and results. Firstly, an imbalanced dataset of size $N$ is divided into a minority $N_{min}$ and majority $N_{maj}$ part, based on the amount of samples per class, where $N = N_{min} + N_{maj}$. In this thesis, minority class or positive class will be used interchangeably. As well as using label or class. This 
+
+\section{datasets}
+In order to examine the performance of the oversamplers, 27 datasets were used from the imbalanced-learn package~\cite{Lemaitre2017Imbalanced-learn:Learning}. Almost all of these datasets are publicly available in the UCI Machine Learning Repository~\cite{Dua2017UCIRepository}, which offers a wide variety of datasets for various machine learning purposes. The Imbalanced-learn package provides a set of imbalanced datasets to benchmark the performance of the oversamplers. All datasets offer a binary classification problem. The popular dataset 'wine\_quality' originally included multiple classes for classification. In order to make it possible for binary classification, minority classes were combined an imbalanced dataset for binary classification.
+
+\begin{table}
+    \centering
+        \begin{tabular}{lrrrrr}
+        \toprule
+                dataset &    size &  features &  numerical &  categorical & imbalance \\
+                & & & features & features & ratio \\
+        \midrule
+                  ecoli &     336 &         7 &                   5 &                     2 &           8.6:1 \\
+         optical\_digits &    5620 &        64 &                   0 &                    64 &           9.1:1 \\
+               satimage &    6435 &        36 &                  36 &                     0 &           9.3:1 \\
+             pen\_digits &   10992 &        16 &                  16 &                     0 &           9.4:1 \\
+                abalone &    4177 &        10 &                   7 &                     3 &           9.7:1 \\
+         sick\_euthyroid &    3163 &        42 &                   6 &                    36 &           9.8:1 \\
+           spectrometer &     531 &        93 &                  93 &                     0 &          10.8:1 \\
+            car\_eval\_34 &    1728 &        21 &                   0 &                    21 &          11.9:1 \\
+                 isolet &    7797 &       617 &                 610 &                     7 &          12.0:1 \\
+               us\_crime &    1994 &       100 &                  99 &                     1 &          12.3:1 \\
+              yeast\_ml8 &    2417 &       103 &                 103 &                     0 &          12.6:1 \\
+                  scene &    2407 &       294 &                 294 &                     0 &          12.6:1 \\
+            libras\_move &     360 &        90 &                  90 &                     0 &          14.0:1 \\
+           thyroid\_sick &    3772 &        52 &                   6 &                    46 &          15.3:1 \\
+              coil\_2000 &    9822 &        85 &                   1 &                    84 &          15.8:1 \\
+             arrhythmia &     452 &       278 &                 137 &                   141 &          17.1:1 \\
+         solar\_flare\_m0 &    1389 &        32 &                   0 &                    32 &          19.4:1 \\
+                    oil &     937 &        49 &                  39 &                    10 &          21.9:1 \\
+             car\_eval\_4 &    1728 &        21 &                   0 &                    21 &          25.6:1 \\
+           wine\_quality &    4898 &        11 &                  11 &                     0 &          25.8:1 \\
+             letter\_img &   20000 &        16 &                   0 &                    16 &          26.2:1 \\
+              yeast\_me2 &    1484 &         8 &                   6 &                     2 &          28.1:1 \\
+                webpage &   34780 &       300 &                   0 &                   300 &          34.5:1 \\
+            ozone\_level &    2536 &        72 &                  72 &                     0 &          33.7:1 \\
+            mammography &   11183 &         6 &                   6 &                     0 &          42.0:1 \\
+           protein\_homo &  145751 &        74 &                  74 &                     0 &         111.5:1 \\
+             abalone\_19 &    4177 &        10 &                   7 &                     3 &         129.5:1 \\
+        \bottomrule
+        \end{tabular}
+    \caption{Overview of imbalanced datasets involved in the study}
+    \label{tab:df_info}
+\end{table}
+
+The datasets are shown in table~\ref{tab:df_info}, providing information about the size, number of numerical and categorical features and the imbalance ratio, which is calculated as
+
+\begin{equation}
+    \text{imbalance ratio} = \frac{N_{maj}}{N_{min}}
+\end{equation}
+
+The datasets are sorted from smallest to biggest ratio between $N_{maj}$ and $N_{min}$. It can be seen that the most balanced dataset has 8.6 samples in the majority class for every minority sample and ranges all the way to 129.5 samples to one. Other variations between datasets include the amount of total samples, $N$, ranging from 336 samples in the smallest dataset 'ecoli' to 145.751 samples in the 'protein\_homo' dataset. Larger datasets benefit from the fact that they include more information about each class, whereas small datasets lack the information to discover regularities or patterns in the training data~\cite{Ali2013ClassificationReview}.
+
+A final point of interest is the difference between numerical and categorical features. For this thesis, continuous features are labelled as numerical and discrete, ordinal or binary features as categorical. Techniques such as SMOTE which work on a k-nearest neighbours principle are meant to be used with numerical features and expects samples in a continuous sample space, while other techniques such as Random Oversampling copy existing samples and therefore do not require specific feature types.
+
+These variations in the datasets help in analysis of oversamplers in different scenarios and can help understand where they perform best.
+
+\section{oversamplers}
+This thesis tested the performance of ten oversamplers over 26 datasets. Note that SMOTE-NC does not work for exclusively numerical or categorical data, and is therefore only used on the datasets which contain both feature types. The reasoning for SMOTE-NC is that it is an adaption on regular SMOTE, which already works with numerical features. The results also include the base performance without oversampling for reference 
+
+\section{metrics}
+There are already a large variety of widely accepted and standard measures for binary classification, many of these are not suitable when dealing with imbalanced data. Scores such as accuracy are based on the amount of correctly classified samples, where the performance on the majority class can be over represented~\cite{Fernandez2018LearningSets}. A classifier which assigns the majority class to all instances will achieve a $99\%$ accuracy if the imbalance ratio is $99:1$. Another drawback is that it is assumed that every error is equally costly. In imbalanced classification it is often more important to correctly label the minority class and misclassifying these cases are more costly errors. A medical model which fails to predict if a patient has a disease is costlier than a false alarm. The goal is therefore to label more minority classes correctly while still maintaining a good score on the majority class. The performance of the classifier is measured by first predicting either the class or the probability of belonging to a class. The first notations that are introduced are from the confusion matrix, representing the number of TP (true positive), TN (True negative), FP (false positive) and FN (false negative) samples, where $P = TP + FN$ and $N = TN + FP$. The following metrics are then derived from these five measures.
+
+\textbf{G-score:} the geometric mean of accuracy achieved on minority and majority instances
+\begin{equation}
+    G = \sqrt{\frac{TP}{P} \cdot \frac{TN}{N}}
+\end{equation}
+
+\textbf{Precision:} the ratio between the true positives and false positives. Intuitively it is the ability to not mislabel a sample in the positive class
+\begin{equation}
+    PR = \frac{TP}{TP + FP}
+\end{equation}
+
+\textbf{Recall:} the ratio between true positives and false negatives, or the ability to find all positive samples.
+\begin{equation}
+    RE = \frac{TP}{TP + FN}
+\end{equation}
+
+\textbf{$F_1$-score:} the harmonic mean of precision (PR) and recall (RE)
+\begin{equation}
+    F_1 = 2 \cdot \frac{PR \cdot RE}{PR + RE}
+\end{equation}
+
+\textbf{Balanced accuracy:} the average of recall obtained on each class, it is the accuracy score with class-balanced sample weights
+\begin{equation}
+    \frac{\frac{TP}{TP + FN} + \frac{TN}{TN + FP}}{2}
+\end{equation}
+
+\textbf{PR AUC:} the Area Under Precision-Recall Curve charactarizes the trade off between precision and recall for different probability thresholds. 
+
+The mean of these metrics is taken over each fold during cross validation. 
+
+\section{Evaluation methods}
+cross validation: Due to the small dataset sizes $N$ and lower amount of samples in $N_{min}$

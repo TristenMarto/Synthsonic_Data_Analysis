@@ -1,0 +1,64 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+
+\author{Tristen}
+\title{Outline \\ Synthsonic: Fast, probabilistic modeling and synthesis of tabular data}
+\begin{document}
+
+\maketitle
+
+\section{Introduction (5-8 pages)}
+    \begin{itemize}
+        \item Introduction to imbalanced learning
+        \item problem statement
+        \item research gap and research question
+    \end{itemize}
+
+\section{Theory (8-12 pages)}
+    \begin{itemize}
+        \item Theoretic description of oversampling techniques: Start with the basic SMOTE version and explain the theory behind the technique
+        \item potential drawbacks SMOTE-based oversamplers, ie how SMOTE variants rely on linear combinations of samples in order to generate new samples
+        \item Small introduction to GANs and Copula based synthesizers as a bridge to synthsonic
+        \item extensive description of synthsonic, explaining the steps in the oversampling process.
+    \end{itemize}
+
+\section{Methods (3-5 pages)}
+    \begin{itemize}
+        \item description of global experiment design: How is the experiment set up? Explain reasoning for classifier, cross-validation, method of oversampling and evaluation of final results. Pseudo code of experiment run
+        \item information about used datasets: Show the used datasets and explain their characteristics
+        \item choice of metrics for experiments: describe choice of metrics and describe how they are calculated
+        \item choice of oversamplers and parameters: proportion is varied and best performance is selected. Other parameters are kept constant.
+    \end{itemize}
+    
+\section{Results (7-9 pages)}
+        \begin{itemize}
+        \item mean scores and overall results: Show a table ranking the oversamplers per metric. Show where each oversampler performs best 
+        \item deep dive per dataset category: show results when analyzing the performance based on categorical, numerical or mixed datasets. Describe if there are any key differences.
+        \item Bar charts of performance 
+        \item PR-curve results: PR Curves show interesting patterns on very imbalanced data 
+    \end{itemize}
+    
+    
+\section{discussion (5-8 pages)}
+discussion of results by five elements:
+    \begin{itemize}
+        \item Interpretations: what do the results mean?
+        \item Implications: why do the results matter?
+        \item Limitations: what can’t the results tell us?
+        \item Recommendations: what are the next steps and topics to study?
+        \item Relation to literature: two important comparison papers: "Oversampling Tabular Data with Deep Generative Models: Is it worth the effort?" (Camino R., 2020) and "An empirical comparison and evaluation of minority oversampling techniques on a large number of imbalanced datasets" (Kovacs G., 2019)
+    \end{itemize}
+
+\section{conclusion/future work (5-6 pages)}
+    \begin{itemize}
+        \item describe situations where synthsonic was better, and if it weighs up to the 
+        \item early conclusions:
+        \begin{itemize}
+            \item standard XGBoost already performs well on imbalanced datasets.
+            \item Synthsonic has higher runtimes than other oversamplers, the extra time is not always worth it.
+            \item Synthsonic scores higher on categorical datasets, likely due to the fact it uses a Bayesian network to 
+            \item overall, the effect of oversampling in general seems to be minimal. There is always an improvement, but very small in absolute numbers.
+        \end{itemize}
+    \end{itemize}
+
+\end{document}
