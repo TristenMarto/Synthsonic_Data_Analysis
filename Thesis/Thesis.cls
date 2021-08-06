@@ -181,7 +181,7 @@
 %	defined as \examname above so you cite it as \examname
 %----------------------------------------------------------------------------------------
 
-\thesistitle{Synthsonic} % Your thesis title - this is used in the title and abstract
+\thesistitle{Synthsonic: Fast, Probabilistic modeling and synthesis of tabular data} % Your thesis title - this is used in the title and abstract
 %-------------------------------------------------  
 \supervisor{Lorraine D'Almeida \\ Max Baak} % You supervisor's name - this is used in the title page
 %-------------------------------------------------   
