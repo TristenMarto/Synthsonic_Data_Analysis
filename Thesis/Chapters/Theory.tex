@@ -1,18 +1,12 @@
 \lhead{Theory}
-
-\section{oversampling techniques}
-This section will talk about oversampling in general and will take a closer look at specific oversamplers.
-
-Dealing with imbalanced data can be done in different ways, there are undersampling techniques where you remove samples from the majority class. This has the drawback that important data may be removed. The main focus point of this thesis are oversampling techniques, where different methods are used in order to synthesize new samples for the minority class. Both methods have a similar end goal: make the dataset more balanced.
-
-
-
 \section{Synthsonic}
+This section is dedicated to the theory behind Synthsonic. Contrary to other techniques such as SMOTE or other generative algorithms, Synthsonic uses reversible mathematical transformations, making use of as much information in the dataset as possible. This has the additional benefit that Synthsonic is easier to interpret than other GANs, where the synthesis of new samples happens through black box machine learning methods. Additionally, 
+
 
 Synthsonic consists out of multiple reversible transformations of features. It can handle both numerical and categorical features, and will split a dataset $X$ into a numerical and categorical set, so that $X = (X_{num}, X_{cat})$. Modelling of the dataset happens in five steps:
 
 \begin{enumerate}
-    \item Numerical features are transformed into uniformly distributed ones, using invertible steps, from which the first-order correlations have been removed.
+    \item Numerical features are transformed into uniformly distributed ones, using reversible steps, from which the first-order correlations have been removed.
     \item Categorical and discretized numerical features are jointly modelled with a Bayesian network.
     \item Specific features can be selected for additional modelling.
     \item A discriminative learner is trained to model the residual discrepancies observed between the input data and the Bayesian network.

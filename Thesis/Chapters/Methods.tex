@@ -93,4 +93,4 @@ There are already a large variety of widely accepted and standard measures for b
 The mean of these metrics is taken over each fold during cross validation. 
 
 \section{Evaluation methods}
-cross validation: Due to the small dataset sizes $N$ and lower amount of samples in $N_{min}$
+cross validation: Due to the small dataset sizes $N$ and lower amount of samples in $N_{min}$, using a single split between training and testing data can lead to biased result depending on the split. To counter this, the oversamplers are evaluated over a stratified k-fold cross-validation using four folds to achieve reproducible and reliable results. This number is chosen based on the smallest dataset to ensure that there are enough samples of the positive class in the testing set, the folds are the same for each oversampler to ensure a fair comparison. The training set is first oversampled, with different sampling proportions, before fitting the classifier. After fitting and predicting, the balanced accuracy, geometric mean, F1 score and AUC of the PR curve are determined.
