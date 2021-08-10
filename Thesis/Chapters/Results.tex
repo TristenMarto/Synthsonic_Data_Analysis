@@ -5,7 +5,7 @@ This chapter discusses about the results from the experiment with different SMOT
 10 oversamplers, including Synthsonic, were used in classifying 27 imbalanced datasets shown earlier in table~\ref{tab:df_info}. Due to the large amount of results, it is not feasible to discuss all details of oversampling. For comparison, the average results are shown for all datasets, but also per dataset type. The datasets are separated based on the number of categorical and numerical features in that dataset.
 
 \section{Ranking of oversamplers}
-In order to create a fair ranking over all datasets, we have taken the best performance per metric per oversampler. Table~\ref{tab:ranking} overview of the performance over various datasets with different characteristics. The first assumption is that the base classifier without oversampling should perform the worst out of all on most metrics. The exception is precision, which is expected to be higher when there is a high 
+In order to create a fair ranking over all datasets, we have taken the best performance per metric per oversampler. Table~\ref{tab:ranking} overview of the performance over various datasets with different characteristics. The first assumption is that the base classifier without oversampling should perform the worst out of all on most metrics. The exception is precision, which is expected to be higher when there is a high amount of samples in the majority class. 
 
 \begin{table}[ht]
 \centering
@@ -30,32 +30,77 @@ In order to create a fair ranking over all datasets, we have taken the best perf
 \label{tab:ranking}
 \end{table}
 
-
-
-\section{Numerical datasets}
-The first subcategory of datasets are the ones with either only numerical features or a majority of them. Regular SMOTE techniques are expected to perform better here as their techniques require continuous features to work.
+Next we can see from figure~\ref{fig:Total} that No oversampling scores the lowest on all metrics, in accordance with our predictions. 
 
 \begin{figure}[htp]
 \centering
-\includegraphics[width=.3\textwidth]{Plots/Plots_numerical_datasets/Numerical_balanced_accuracy.png}\quad
-\includegraphics[width=.3\textwidth]{Plots/Plots_numerical_datasets/Numerical_G_mean.png}\quad
-\includegraphics[width=.3\textwidth]{Plots/Plots_numerical_datasets/Numerical_f1.png}
-
-\medskip
-
-\includegraphics[width=.3\textwidth]{Plots/Plots_numerical_datasets/Numerical_precision.png}\quad
-\includegraphics[width=.3\textwidth]{Plots/Plots_numerical_datasets/N}\quad
-\includegraphics[width=.3\textwidth]{example-image-b}\quad
-
-\caption{Figure caption}
-\label{pics:blablabla}
+    \includesvg[width=.45\textwidth]{../Plots/Total/total_balanced_accuracy.svg}\quad
+    \includesvg[width=.45\textwidth]{../Plots/Total/total_G_mean.svg}
+    \medskip
+    \includesvg[width=.45\textwidth]{../Plots/Total/total_f1.svg} \quad
+    \includesvg[width=.45\textwidth]{../Plots/Total/total_pr_auc.svg}
+    \medskip
+    \includesvg[width=.45\textwidth]{../Plots/Total/total_precision.svg}\quad
+    \includesvg[width=.45\textwidth]{../Plots/Total/total_recall.svg}
+\caption{Average metrics scores per oversampler on all datasets. All scores range from 0 (worst) to 1 (best).}
+\label{fig:Total}
 \end{figure}
 
+\section{Numerical datasets}
+The first subcategory of datasets are the ones with either only numerical features or a majority of them. This subset contains 17 datasets, the majority of the total 27. Regular SMOTE techniques are expected to perform better here as their techniques require continuous features to work. Figure~\ref{fig:Numerical}. Again ADASYN scores well on balanced accuracy and Geometric mean 
+
+\begin{figure}[htp]
+\centering
+    \includesvg[width=.45\textwidth]{../Plots/Numerical/Numerical_balanced_accuracy.svg}\quad
+    \includesvg[width=.45\textwidth]{../Plots/Numerical/Numerical_G_mean.svg}
+    \medskip
+    \includesvg[width=.45\textwidth]{../Plots/Numerical/Numerical_f1.svg} \quad
+    \includesvg[width=.45\textwidth]{../Plots/Numerical/Numerical_pr_auc.svg}
+    \medskip
+    \includesvg[width=.45\textwidth]{../Plots/Numerical/Numerical_precision.svg}\quad
+    \includesvg[width=.45\textwidth]{../Plots/Numerical/Numerical_recall.svg}
+\caption{Average metrics scores per oversampler on datasets containing numerical features. All scores range from 0 (worst) to 1 (best).}
+\label{fig:Numerical}
+\end{figure}
 
 \section{Categorical datasets}
+The second subcategory of datasets are the ones with either exclusively or a large majority of categorical datasets. This includes nine of the total 27 datasets. Results are shown in figure~\ref{fig:Categorical}, after selecting the highest score per dataset  The assumption was that methods such as Synthsonic or ADASYN, which don't rely on a nearest neighbour principle, to perform better on this subset.
+
+\begin{figure}[htp]
+\centering
+    \includesvg[width=.45\textwidth]{../Plots/Categorical/Categorical_balanced_accuracy.svg}\quad
+    \includesvg[width=.45\textwidth]{../Plots/Categorical/Categorical_G_mean.svg}
+    \medskip
+    \includesvg[width=.45\textwidth]{../Plots/Categorical/Categorical_f1.svg} \quad
+    \includesvg[width=.45\textwidth]{../Plots/Categorical/Categorical_pr_auc.svg}
+    \medskip
+    \includesvg[width=.45\textwidth]{../Plots/Categorical/Categorical_precision.svg}\quad
+    \includesvg[width=.45\textwidth]{../Plots/Categorical/Categorical_recall.svg}
+\caption{Average metrics scores per oversampler on datasets containing categorical features. All scores range from 0 (worst) to 1 (best).}
+\label{fig:Categorical}
+\end{figure}
+
+The first observation is that SMOTE-NC performs poorly on these datasets, even scoring the lowest on F1-score, PR AUC and precision. Note that SMOTE-NC does not work on exclusively categorical features, and therefore only was used on three instead of nine datasets. Despite this, we want to portray how oversamplers perform in a wide variety of situations and try to find an overall best oversampler. For this reason the results of SMOTE-NC are included.
+
+Comparing these results to those of the total datasets, we can see that Synthsonic scores higher on balanced accuracy and Geometric mean when compared to the total results. This means that Synthsonic is able to discern true positives and true negatives better due to oversampling. This is also reflected in the highest score in recall on categorical datasets, but when comparing to the total results we see a higher drop in precision. 
+
+Contrary to the total results, there is a smaller trade-off between precision and recall.
 
 \section{Mixed datasets}
+Here figure~\ref{fig:mixed}
 
-
+\begin{figure}[htp]
+\centering
+    \includesvg[width=.45\textwidth]{../Plots/Mixed/Mixed_balanced_accuracy.svg}\quad
+    \includesvg[width=.45\textwidth]{../Plots/Mixed/Mixed_G_mean.svg}
+    \medskip
+    \includesvg[width=.45\textwidth]{../Plots/Mixed/Mixed_f1.svg} \quad
+    \includesvg[width=.45\textwidth]{../Plots/Mixed/Mixed_pr_auc.svg}
+    \medskip
+    \includesvg[width=.45\textwidth]{../Plots/Mixed/Mixed_precision.svg}\quad
+    \includesvg[width=.45\textwidth]{../Plots/Mixed/Mixed_recall.svg}
+\caption{Average metrics scores per oversampler on datasets containing a mix of numerical and categorical features. All scores range from 0 (worst) to 1 (best).}
+\label{fig:mixed}
+\end{figure}
 
 

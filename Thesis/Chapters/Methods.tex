@@ -7,38 +7,38 @@ In order to examine the performance of the oversamplers, 27 datasets were used f
 
 \begin{table}
     \centering
-        \begin{tabular}{lrrrrr}
+        \begin{tabular}{llrrrrr}
         \toprule
-                dataset &    size &  features &  numerical &  categorical & imbalance \\
-                & & & features & features & ratio \\
+                {}& dataset &    size &  features &  numerical &  categorical & imbalance \\
+                & & & & features & features & ratio \\
         \midrule
-                  ecoli &     336 &         7 &                   5 &                     2 &           8.6:1 \\
-         optical\_digits &    5620 &        64 &                   0 &                    64 &           9.1:1 \\
-               satimage &    6435 &        36 &                  36 &                     0 &           9.3:1 \\
-             pen\_digits &   10992 &        16 &                  16 &                     0 &           9.4:1 \\
-                abalone &    4177 &        10 &                   7 &                     3 &           9.7:1 \\
-         sick\_euthyroid &    3163 &        42 &                   6 &                    36 &           9.8:1 \\
-           spectrometer &     531 &        93 &                  93 &                     0 &          10.8:1 \\
-            car\_eval\_34 &    1728 &        21 &                   0 &                    21 &          11.9:1 \\
-                 isolet &    7797 &       617 &                 610 &                     7 &          12.0:1 \\
-               us\_crime &    1994 &       100 &                  99 &                     1 &          12.3:1 \\
-              yeast\_ml8 &    2417 &       103 &                 103 &                     0 &          12.6:1 \\
-                  scene &    2407 &       294 &                 294 &                     0 &          12.6:1 \\
-            libras\_move &     360 &        90 &                  90 &                     0 &          14.0:1 \\
-           thyroid\_sick &    3772 &        52 &                   6 &                    46 &          15.3:1 \\
-              coil\_2000 &    9822 &        85 &                   1 &                    84 &          15.8:1 \\
-             arrhythmia &     452 &       278 &                 137 &                   141 &          17.1:1 \\
-         solar\_flare\_m0 &    1389 &        32 &                   0 &                    32 &          19.4:1 \\
-                    oil &     937 &        49 &                  39 &                    10 &          21.9:1 \\
-             car\_eval\_4 &    1728 &        21 &                   0 &                    21 &          25.6:1 \\
-           wine\_quality &    4898 &        11 &                  11 &                     0 &          25.8:1 \\
-             letter\_img &   20000 &        16 &                   0 &                    16 &          26.2:1 \\
-              yeast\_me2 &    1484 &         8 &                   6 &                     2 &          28.1:1 \\
-                webpage &   34780 &       300 &                   0 &                   300 &          34.5:1 \\
-            ozone\_level &    2536 &        72 &                  72 &                     0 &          33.7:1 \\
-            mammography &   11183 &         6 &                   6 &                     0 &          42.0:1 \\
-           protein\_homo &  145751 &        74 &                  74 &                     0 &         111.5:1 \\
-             abalone\_19 &    4177 &        10 &                   7 &                     3 &         129.5:1 \\
+        1 &           ecoli &     336 &         7 &                   5 &                     2 &           8.6:1 \\
+        2 & optical\_digits &    5620 &        64 &                   0 &                    64 &           9.1:1 \\
+        3 &       satimage &    6435 &        36 &                  36 &                     0 &           9.3:1 \\
+        4 &     pen\_digits &   10992 &        16 &                  16 &                     0 &           9.4:1 \\
+        5 &        abalone &    4177 &        10 &                   7 &                     3 &           9.7:1 \\
+        6 & sick\_euthyroid &    3163 &        42 &                   6 &                    36 &           9.8:1 \\
+        7 &   spectrometer &     531 &        93 &                  93 &                     0 &          10.8:1 \\
+        8 &    car\_eval\_34 &    1728 &        21 &                   0 &                    21 &          11.9:1 \\
+        9 &         isolet &    7797 &       617 &                 610 &                     7 &          12.0:1 \\
+        10 &       us\_crime &    1994 &       100 &                  99 &                     1 &          12.3:1 \\
+        11 &     yeast\_ml8 &    2417 &       103 &                 103 &                     0 &          12.6:1 \\
+        12 &          scene &    2407 &       294 &                 294 &                     0 &          12.6:1 \\
+        13 &    libras\_move &     360 &        90 &                  90 &                     0 &          14.0:1 \\
+        14 &   thyroid\_sick &    3772 &        52 &                   6 &                    46 &          15.3:1 \\
+        15 &      coil\_2000 &    9822 &        85 &                   1 &                    84 &          15.8:1 \\
+        16 &     arrhythmia &     452 &       278 &                 137 &                   141 &          17.1:1 \\
+        17 & solar\_flare\_m0 &    1389 &        32 &                   0 &                    32 &          19.4:1 \\
+        18 &            oil &     937 &        49 &                  39 &                    10 &          21.9:1 \\
+        19 &     car\_eval\_4 &    1728 &        21 &                   0 &                    21 &          25.6:1 \\
+        20 &   wine\_quality &    4898 &        11 &                  11 &                     0 &          25.8:1 \\
+        21 &     letter\_img &   20000 &        16 &                   0 &                    16 &          26.2:1 \\
+        22 &      yeast\_me2 &    1484 &         8 &                   6 &                     2 &          28.1:1 \\
+        23 &        webpage &   34780 &       300 &                   0 &                   300 &          34.5:1 \\
+        24 &    ozone\_level &    2536 &        72 &                  72 &                     0 &          33.7:1 \\
+        25 &    mammography &   11183 &         6 &                   6 &                     0 &          42.0:1 \\
+        26 &   protein\_homo &  145751 &        74 &                  74 &                     0 &         111.5:1 \\
+        27 &     abalone\_19 &    4177 &        10 &                   7 &                     3 &         129.5:1 \\
         \bottomrule
         \end{tabular}
     \caption{Overview of imbalanced datasets involved in the study}
