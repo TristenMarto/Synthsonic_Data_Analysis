@@ -1,7 +1,13 @@
 \lhead{Background}
+The problem statement is defined in the previous chapter, along with the outline of this thesis. As described in the introduction, the focal point is oversampling imbalanced data to help in classification problems. The first step is to describe popular methods when dealing with imbalanced data, before moving to the proposed model.
 
 \section{Dealing with imbalance}
-undersampling/algorithm tuning/oversampling
+There are three popular methods for imbalanced data that will be discussed here: cost-sensitive learning, data level preprocessing methods and algorithm-level approaches. Data level preprocessing includes oversampling and undersampling. These methods handle imbalanced data during three different phases in model training. Algorithm-level approaches focus on modifying the classifier learning procedure without altering the data itself~\cite{Fernandez2018LearningSets}. The process requires an understanding of the mechanics of the classifier which lead to a bias towards the majority class. Since there are many classifiers, each with their own alterations, this topic will be limited to decision trees.
+
+The first method depends on selecting the right algorithm and understanding its limitations in order to improve it. Decision tree classifiers are simple and efficient, and offer an interpretable solution~\cite{Safavian1991AMethodology}. A complex decision is split into a union of several smaller decisions, leading to the shape of a tree. Due to their simplicity, it is also easy to alter them from the algorithm-level approach. Each decision in the tree is made using a split function. Changing this key component is therefore the most straightforward approach possible. 
+
+Secondly, cost-sensitive learning is also an aspect of an algorithm-level approach, but it does not alter the core algorithm itself. Instead, it introduces a missclassification cost which penalizes mistakes during classifier training. 
+
 
 \section{SMOTE basics}
 
