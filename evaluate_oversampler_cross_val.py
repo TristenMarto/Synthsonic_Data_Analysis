@@ -40,7 +40,7 @@ class cross_validation :
         probas = self.clf.predict_proba(X_test)[:,1]
         pr, rec, _ = precision_recall_curve(y_test, probas)
         
-        f_dict = {
+        return {
             'balanced_accuracy': balanced_accuracy_score(y_test, prediction),
             'G_mean': geometric_mean_score(y_test, prediction),
             'f1': f1_score(y_test, prediction, average='binary'),
@@ -48,8 +48,6 @@ class cross_validation :
             'recall': recall_score(y_test, prediction),
             'pr_auc': auc(rec,pr)
         }
-
-        return f_dict
 
     def generate_from_oversampler(self, oversampler, X, y) :
 
@@ -61,6 +59,32 @@ class cross_validation :
             X_g, y_g = oversampler.sample(X, y)
 
         return X_g, y_g 
+
+    def calculate_pr_curve(self, X, y, dataset_name, oversampler, proportion) :
+        
+        dfinfo = HandleData().analyse_dataset(X,y,dataset_name, np.array([0.2,0.4,0.6,0.8,1.]))
+        oversampler = self.configure_oversampler(dfinfo, oversampler, proportion)
+
+        y_real = []
+        y_proba = []
+
+        for fold, (train_index, test_index) in enumerate(self.kf.split(X,y), 1) :
+
+            X_train, X_test = X[train_index], X[test_index]
+            y_train, y_test = y[train_index], y[test_index]
+
+            X_g, y_g = self.generate_from_oversampler(oversampler, X_train, y_train)
+
+            self.clf.fit(X_g, y_g)
+            probas = self.clf.predict_proba(X_test)
+            precision, recall, _ = precision_recall_curve(y_test, probas[:,1])
+            y_real.append(y_test)
+            y_proba.append(probas[:,1])
+        
+        y_real = np.concatenate(y_real)
+        y_proba = np.concatenate(y_proba)
+
+        return precision_recall_curve(y_real, y_proba) 
 
     def cross_validate_oversampler(self, X, y, dataset_name, oversampler, proportion) :
 
@@ -119,7 +143,8 @@ class cross_validation :
         dfs = []
 
         for dataset in datasets :
-            X,y,title = dataset['data'].values, dataset['label'].values, dataset['DESCR']
+            X,y,title = dataset['data'].values, dataset['target'].values, dataset['DESCR']
+            y = HandleData().label_encode(y)
             dataset_info = HandleData().analyse_dataset(X, y, title, proportions)
 
             for proportion in dataset_info['possible_proportions'] :
@@ -153,7 +178,8 @@ class cross_validation :
         dfs = []
 
         for dataset in tqdm(datasets, desc='dataset') :
-            X,y,dataset_name = dataset['data'].values, dataset['label'].values, dataset['DESCR']
+            X,y,dataset_name = dataset['data'], dataset['target'], dataset['DESCR']
+            y = HandleData().label_encode(y) 
             dfs.append(self.loop_over_oversamplers(X, y, dataset_name, oversamplers, proportions))
 
         return pd.concat(dfs)

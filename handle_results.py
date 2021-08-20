@@ -18,14 +18,12 @@ class HandleResults :
         for dataset in df['dataset'].unique() :
             temp.append(self.get_best(df, dataset, metric))
             
-        res = pd.concat(temp)
-        
-        return res
+        return pd.concat(temp)
 
     def ranking_oversampler(self, df, metric, return_all = False) :
         
         df2 = df.groupby('oversampler').mean().sort_values(metric, ascending=False)
-        df3 = df2[['proportion', metric, f'{metric}_std']]
+        df3 = df2[[metric, f'{metric}_std']]
         
         if return_all :
             return df2

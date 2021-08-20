@@ -63,7 +63,11 @@ class HandleData :
 
         return majority, minority, min_prop
 
-    def label_encode(self, df, columns) :
+    def label_encode(self, y) :
+
+        return LabelEncoder().fit_transform(y)
+
+    def label_encode_df(self, df, columns) :
 
         for label in columns :
             df[label] = LabelEncoder().fit_transform(df[label])
@@ -76,7 +80,7 @@ class HandleData :
         majority, minority, min_prop = self.find_min_maj(y)
         possible_props = proportions[proportions > min_prop] 
 
-        f_dict = {
+        return {
             'title': dataset_name,
             'samples': X.shape[0],
             'features': X.shape[1],
@@ -87,5 +91,3 @@ class HandleData :
             'minority': minority,
             'possible_proportions': possible_props
         }
-
-        return f_dict
