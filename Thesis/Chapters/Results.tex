@@ -14,9 +14,9 @@ In order to create a fair ranking over all datasets, we have taken the best perf
     \toprule
     {rank} &        Oversampler &  balanced\_accuracy &        Oversampler &    G\_mean &        Oversampler &        f1 &        Oversampler &  precision &        Oversampler &    recall &        Oversampler &    pr\_auc \\
     \midrule
-    1  &             ADASYN &           0.798285 &             ADASYN &  0.729639 &           SVMSMOTE &  0.626186 &     NoOversampling &   0.699163 &             ADASYN &  0.614653 &         synthsonic &  0.649430 \\
-    2  &              SMOTE &           0.797884 &              SMOTE &  0.729364 &             ADASYN &  0.623797 &  polynom\_fit\_SMOTE &   0.693186 &         synthsonic &  0.614159 &           SVMSMOTE &  0.649420 \\
-    3  &         synthsonic &           0.797308 &         synthsonic &  0.726812 &              SMOTE &  0.621968 &  RandomOversampler &   0.686230 &              SMOTE &  0.614040 &             ADASYN &  0.649238 \\
+    1  &             ADASYN &           0.798285 &             ADASYN &  0.729639 &           SVMSMOTE &  0.626186 &     NoOversampling &   0.699163 &             ADASYN &  0.614653 &         Synthsonic &  0.649430 \\
+    2  &              SMOTE &           0.797884 &              SMOTE &  0.729364 &             ADASYN &  0.623797 &  polynom\_fit\_SMOTE &   0.693186 &         Synthsonic &  0.614159 &           SVMSMOTE &  0.649420 \\
+    3  &         synthsonic &           0.797308 &         Synthsonic &  0.726812 &              SMOTE &  0.621968 &  RandomOversampler &   0.686230 &              SMOTE &  0.614040 &             ADASYN &  0.649238 \\
     4  &           SVMSMOTE &           0.796564 &  RandomOversampler &  0.726309 &       Random\_SMOTE &  0.621696 &           SVMSMOTE &   0.681582 &  RandomOversampler &  0.613770 &  RandomOversampler &  0.648616 \\
     5  &  RandomOversampler &           0.796323 &       Random\_SMOTE &  0.725619 &    BorderlineSMOTE &  0.620457 &       Random\_SMOTE &   0.679765 &       Random\_SMOTE &  0.609360 &  polynom\_fit\_SMOTE &  0.647145 \\
     6  &       Random\_SMOTE &           0.795903 &           SVMSMOTE &  0.724931 &  RandomOversampler &  0.620094 &             ADASYN &   0.678240 &           SVMSMOTE &  0.608782 &              SMOTE &  0.647125 \\
@@ -62,7 +62,7 @@ The first subcategory of datasets are the ones with either only numerical featur
         Random\_SMOTE      &              0.755 &                  0.030 &   0.675 &       0.051 &  0.547 &   0.050 &      0.619 &          0.093 &   0.532 &       0.060 &   0.564 &       0.057 \\
         BorderlineSMOTE   &              0.753 &                  0.036 &   0.674 &       0.059 &  0.548 &   0.065 &      0.619 &          0.075 &   0.527 &       0.071 &   0.567 &       0.064 \\
         RandomOversampler &              0.747 &                  0.037 &   0.649 &       0.057 &  0.542 &   0.063 &      0.647 &          0.087 &   0.512 &       0.074 &   0.573 &       0.052 \\
-        synthsonic        &              0.747 &                  0.037 &   0.655 &       0.063 &  0.544 &   0.059 &      0.642 &          0.087 &   0.510 &       0.076 &   0.577 &       0.054 \\
+        Synthsonic        &              0.747 &                  0.037 &   0.655 &       0.063 &  0.544 &   0.059 &      0.642 &          0.087 &   0.510 &       0.076 &   0.577 &       0.054 \\
         polynom\_fit\_SMOTE &              0.738 &                  0.032 &   0.638 &       0.050 &  0.526 &   0.060 &      0.637 &          0.089 &   0.492 &       0.066 &   0.567 &       0.051 \\
         SMOTENC           &              0.732 &                  0.041 &   0.643 &       0.075 &  0.489 &   0.063 &      0.522 &          0.092 &   0.497 &       0.081 &   0.493 &       0.057 \\
         NoOversampling    &              0.711 &                  0.037 &   0.577 &       0.065 &  0.494 &   0.070 &      0.653 &          0.079 &   0.432 &       0.075 &   0.566 &       0.059 \\
@@ -82,7 +82,7 @@ The second subcategory of datasets are the ones with either exclusively or a lar
         \toprule
         {} &  balanced accuracy &  std &  G\_mean & std &     f1 & std &  precision &  std &  recall &  std &  pr\_auc &  std \\
         \midrule
-        synthsonic        &              0.882 &                  0.019 &   0.850 &       0.024 &  0.734 &   0.027 &      0.722 &          0.047 &   0.790 &       0.035 &   0.772 &       0.031 \\
+        Synthsonic        &              0.882 &                  0.019 &   0.850 &       0.024 &  0.734 &   0.027 &      0.722 &          0.047 &   0.790 &       0.035 &   0.772 &       0.031 \\
         RandomOversampler &              0.879 &                  0.022 &   0.857 &       0.030 &  0.752 &   0.033 &      0.752 &          0.049 &   0.786 &       0.044 &   0.776 &       0.029 \\
         ADASYN            &              0.867 &                  0.020 &   0.812 &       0.036 &  0.748 &   0.041 &      0.779 &          0.051 &   0.744 &       0.038 &   0.780 &       0.028 \\
         SMOTE             &              0.866 &                  0.020 &   0.813 &       0.036 &  0.748 &   0.039 &      0.781 &          0.055 &   0.744 &       0.040 &   0.781 &       0.031 \\
@@ -97,9 +97,6 @@ The second subcategory of datasets are the ones with either exclusively or a lar
 \caption{Scores per oversampler on datasets containing exclusively or a majority of categorical features.}
 \label{tab:categorical}
 \end{table}
-
-
-
 
 The first observation is that SMOTE-NC performs poorly on these datasets, even scoring the lowest on F1-score, PR AUC and precision. Note that SMOTE-NC does not work on exclusively categorical features, and therefore only was used on three instead of nine datasets. Despite this, we want to portray how oversamplers perform in a wide variety of situations and try to find an overall best oversampler. For this reason the results of SMOTE-NC are included.
 
@@ -124,7 +121,7 @@ Contrary to the total results, there is a smaller trade-off between precision an
         Random\_SMOTE      &              0.766 &                  0.032 &   0.682 &       0.048 &  0.555 &   0.052 &      0.615 &          0.107 &   0.558 &       0.063 &   0.570 &       0.056 \\
         BorderlineSMOTE   &              0.766 &                  0.036 &   0.683 &       0.058 &  0.551 &   0.060 &      0.577 &          0.070 &   0.557 &       0.074 &   0.559 &       0.066 \\
         RandomOversampler &              0.764 &                  0.038 &   0.686 &       0.049 &  0.550 &   0.058 &      0.583 &          0.077 &   0.560 &       0.077 &   0.567 &       0.052 \\
-        synthsonic        &              0.760 &                  0.042 &   0.670 &       0.063 &  0.543 &   0.058 &      0.585 &          0.079 &   0.542 &       0.086 &   0.574 &       0.057 \\
+        Synthsonic        &              0.760 &                  0.042 &   0.670 &       0.063 &  0.543 &   0.058 &      0.585 &          0.079 &   0.542 &       0.086 &   0.574 &       0.057 \\
         polynom\_fit\_SMOTE &              0.740 &                  0.035 &   0.636 &       0.048 &  0.532 &   0.057 &      0.609 &          0.084 &   0.498 &       0.071 &   0.572 &       0.061 \\
         NoOversampling    &              0.726 &                  0.042 &   0.611 &       0.063 &  0.510 &   0.069 &      0.604 &          0.086 &   0.467 &       0.086 &   0.562 &       0.069 \\
     \bottomrule
@@ -132,3 +129,66 @@ Contrary to the total results, there is a smaller trade-off between precision an
 \caption{Scores per oversampler on datasets containing exclusively or a majority of categorical features.}
 \label{tab:mixed}
 \end{table}
+
+
+\section{Runtime}
+This section discusses runtimes
+
+The average runtime over all 27 datasets is shown in table~\ref{tab:runtimes}. These results are achieved by oversampling each dataset using a sampling strategy of 1, which means both classes contain an equal amount of samples. From the average runtimes it can be seen that the SMOTE-based oversamplers all have a comparable average runtime. 
+
+\begin{table}[]
+    \centering
+    \begin{tabular}{lrr}
+    \toprule
+    stdev oversampler & runtime (s) &  stdev \\
+    \midrule
+    RandomOversampler &    0.014 &        0.001 \\
+    polynom\_fit\_SMOTE &    0.041 &        0.002 \\
+    SMOTE             &    0.059 &        0.002 \\
+    BorderlineSMOTE   &    0.297 &        0.005 \\
+    ADASYN            &    0.397 &        0.006 \\
+    Random\_SMOTE      &    0.419 &        0.015 \\
+    SMOTENC           &    1.395 &        0.024 \\
+    SVMSMOTE          &    2.735 &        0.057 \\
+    synthsonic        &   86.641 &        0.646 \\
+    \bottomrule
+    \end{tabular}
+    \caption{Runtime for 1:1 oversampling, averaged over all 27 datasets.}
+    \label{tab:runtimes}
+\end{table}
+
+
+
+-- overall view with boxplot and table
+
+
+-- relation with size 
+
+-- relation with features
+
+-- 
+
+\begin{figure}[h!]
+\centering
+\begin{subfigure}[b]{0.7\textwidth}
+    \centering
+    \includesvg[width=\textwidth]{../Plots/Runtime/boxplot.svg}
+    \caption{A boxplot of the runtimes per oversampler over all datasets, oversampled to a ratio of 1:1.}
+    \label{fig:boxplot}
+\end{subfigure}
+\vfill
+\begin{subfigure}[b]{0.7\textwidth}
+    \centering
+    \includesvg[width=\textwidth]{../Plots/Runtime/runtime_vs_features.svg}
+    \caption{The runtime for 1:1 oversampling, sorted from smallest to largest dataset.}
+    \label{fig:runvfeat}
+\end{subfigure}
+\vfill
+\begin{subfigure}[b]{0.7\textwidth}
+    \centering
+    \includesvg[width=\textwidth]{../Plots/Runtime/runtime_vs_size.svg}
+    \caption{he runtime for 1:1 oversampling, sorted from fewest to most features.}
+    \label{fig:runvsize}
+\end{subfigure}
+
+\end{figure}
