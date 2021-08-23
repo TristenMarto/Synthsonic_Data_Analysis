@@ -44,11 +44,32 @@ Another example is Borderline-SMOTE, which synthesizes minority samples near the
 
 Another SMOTE-based oversampler is ADASYN, an acronym for ADAptive SYNthetic sampling approach~\cite{He2008ADASYN:Learning}. ADASYN introduces a new learning constraint, where it uses the weighted distribution for different minority samples according to their difficulty in learning. More samples will be synthesized for samples that are harder to learn. Similar to Borderline-SMOTE, a sample surrounded by majority samples is considered harder to learn. However, ADASYN uses a density distribution for all minority samples to decide where to synthesize new samples.
 
+\begin{figure}
+  \begin{subfigure}[t]{.4\textwidth}
+    \centering
+    \includegraphics[width=\linewidth]{example-image-a}
+    \caption{\textbf{Schnitt}: $A \cup B$: Element liegt in $A$ \textbf{oder} in $B$.}
+  \end{subfigure}
+  \hfill
+  \begin{subfigure}[t]{.4\textwidth}
+    \centering
+    \includegraphics[width=\linewidth]{example-image-b}
+    \caption{\textbf{Vereinigung}: $A \cap B$: Element liegt in $A$ \textbf{und} in $B$.}
+  \end{subfigure}
 
-XXX
+  \medskip
 
-figure showing SMOTE oversampling on dummy dataset
-
-XXX
+  \begin{subfigure}[t]{.4\textwidth}
+    \centering
+    \includegraphics[width=\linewidth]{example-image-c}
+    \caption{\textbf{Differenz}: $A \setminus B$: Element liegt in $A$ \textbf{nicht} in $B$. (\textit{A ohne B})}
+  \end{subfigure}
+  \hfill
+  \begin{subfigure}[t]{.4\textwidth}
+    \centering
+    \includegraphics[width=\linewidth]{example-image-a}
+    \caption{\textbf{Symmetrische Differenz}: $A \Delta B$: Element liegt \textbf{entweder} in $A$ oder in $B$.}
+  \end{subfigure}
+\end{figure}
 
 Small bit about comparison figure SMOTE
