@@ -63,7 +63,7 @@ This thesis tested the performance of ten oversamplers over 26 datasets. Note th
 \section{metrics}
 There are already a large variety of widely accepted and standard measures for binary classification, many of these are not suitable when dealing with imbalanced data. Scores such as accuracy are based on the amount of correctly classified samples, where the performance on the majority class can be over represented~\cite{Fernandez2018LearningSets}. A classifier which assigns the majority class to all instances will achieve a $99\%$ accuracy if the imbalance ratio is $99:1$. Another drawback is that it is assumed that every error is equally costly. In imbalanced classification it is often more important to correctly label the minority class and misclassifying these cases are more costly errors. A medical model which fails to predict if a patient has a disease is costlier than a false alarm. The goal is therefore to label more minority classes correctly while still maintaining a good score on the majority class. The performance of the classifier is measured by first predicting either the class or the probability of belonging to a class. The first notations that are introduced are from the confusion matrix, representing the number of TP (true positive), TN (True negative), FP (false positive) and FN (false negative) samples, where $P = TP + FN$ and $N = TN + FP$. The following metrics are then derived from these five measures.
 
-\textbf{G-score:} the geometric mean of accuracy achieved on minority and majority instances
+\textbf{G-mean:} the geometric mean of accuracy achieved on minority and majority instances
 \begin{equation}
     G = \sqrt{\frac{TP}{P} \cdot \frac{TN}{N}}
 \end{equation}

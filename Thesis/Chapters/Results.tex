@@ -1,11 +1,33 @@
 \lhead{\emph{Results}}
 
-This chapter discusses about the results from the experiment with different SMOTE variants. 
-
 10 oversamplers, including Synthsonic, were used in classifying 27 imbalanced datasets shown earlier in table~\ref{tab:df_info}. Due to the large amount of results, it is not feasible to discuss all details of oversampling. For comparison, the average results are shown for all datasets, but also per dataset type. The datasets are separated based on the number of categorical and numerical features in that dataset.
 
+\section{general oversampling}
+Each metric is the highest achieved by the oversampler on a dataset. Because all parameters were kept the same except for the proportion, it's therefore checked if certain oversamplers favour a certain proportion. To check this, the amounts were counted which achieved the highest score on all datasets, and the results are shown in table~\ref{tab:prop}. Overall, there is no preferred oversampler across all oversamplers, as all proportions were able to produce a highest score. Interesting to note is that a 1:1 ratio is not always the best for performance. In earlier sections it was described that classifiers prefer balanced classes, but it seems that evenly balanced classes are not always necessary. The results show that the best performance can also be achieved with a small oversampling proportion. Additionally, ADASYN and BorderlineSMOTE seem to perform better at lower proportions, both achieving the most high-scores with a 0.2 proportion. The other oversamplers achieve highest use a variety of all proportions to achieve the best scores. Most notable is SVMSMOTE, which achieved highest scores with all proportions except 0.4. 
+
+The effect of the oversampling proportion was further studied by looking at the average proportion that produced the highest scores per dataset. 
+
+\begin{table}[]
+\centering
+\resizebox{\textwidth}{!}{
+\begin{tabular}{l|rrrrrrrrr}
+    \toprule
+    proportion &  ADASYN &  BorderlineSMOTE &  RandomOversampler &  Random\_SMOTE &  SMOTE &  SMOTENC &  SVMSMOTE &  polynom\_fit\_SMOTE &  synthsonic \\
+    \midrule
+    0.2 &       9 &                7 &                  6 &             3 &      7 &        1 &         6 &                  5 &           7 \\
+    0.4  &       4 &                5 &                  5 &             6 &      2 &        4 &         3 &                  4 &           6 \\
+    0.6 &       7 &                3 &                  4 &             4 &      6 &        1 &         6 &                  7 &           5 \\
+    0.8 &       4 &                6 &                  4 &             6 &      5 &        3 &         6 &                  4 &           2 \\
+    1.0 &       3 &                6 &                  8 &             8 &      7 &        2 &         6 &                  7 &           7 \\
+    \bottomrule
+\end{tabular}}
+\caption{Amount of highest f1-scores achieved per oversampler by proportion.}
+\label{tab:prop}
+\end{table}
+
+
 \section{Ranking of oversamplers}
-In order to create a fair ranking over all datasets, we have taken the best performance per metric per oversampler. Table~\ref{tab:ranking} overview of the performance over various datasets with different characteristics. The first assumption is that the base classifier without oversampling should perform the worst out of all on most metrics. The exception is precision, which is expected to be higher when there is a high amount of samples in the majority class. 
+In order to create a fair ranking over all datasets, the highest result per metrics was taken. Table~\ref{tab:ranking} overview of the performance over various datasets with different characteristics. The first assumption is that the base classifier without oversampling should perform the worst out of all on most metrics. The exception is precision, which is expected to be higher when there is a high amount of samples in the majority class. 
 
 \begin{table}[ht]
 \centering
@@ -134,13 +156,14 @@ Contrary to the total results, there is a smaller trade-off between precision an
 \section{Runtime}
 This section discusses runtimes
 
-The average runtime over all 27 datasets is shown in table~\ref{tab:runtimes}. These results are achieved by oversampling each dataset using a sampling strategy of 1, which means both classes contain an equal amount of samples. From the average runtimes it can be seen that the SMOTE-based oversamplers all have a comparable average runtime. The SMOTE-based oversamplers all average under 1 second for oversampling, with the exception of SMOTENC and SVMSMOTE. These oversamplers reached an average runtime of 1.395 seconds and 2.725 seconds respectively. From table~\ref{tab:runtimes} it can be seen that Synthsonic differs significantly from its counterparts. The average runtime was 86 seconds
+The average runtime over all 27 datasets is shown in table~\ref{tab:runtimes}. These results are achieved by oversampling each dataset using a sampling strategy of 1, which means both classes contain an equal amount of samples. From the average runtimes it can be seen that the SMOTE-based oversamplers all have a comparable average runtime. The SMOTE-based oversamplers all average under 1 second for oversampling, with the exception of SMOTENC and SVMSMOTE. These oversamplers reached an average runtime of 1.395 seconds and 2.725 seconds respectively. From table~\ref{tab:runtimes} it can be seen that Synthsonic differs significantly from its counterparts. The average runtime was 86 seconds. This is largely due to a few outliers which result in exceptionally high runtimes. These peaks are also present in other oversamplers, as seen in figure~\ref{fig:runvfeat}. SMOTE-based oversamplers also suffer a hit in runtime, but are still able to stay far under the runtime of Synthsonic. Lastly, figure~\ref{fig:runvfeat} shows that the runtime of Synthsonic is affected by the amount of features in the dataset. These features need to be modeled into the Bayesian Network, which significantly adds to the total runtime.
 
 \begin{table}[]
     \centering
     \begin{tabular}{lrr}
     \toprule
-    stdev oversampler & runtime (s) &  stdev \\
+    oversampler & mean run-  &  stdev \\
+     & time (s) & \\
     \midrule
     RandomOversampler &    0.014 &        0.001 \\
     polynom\_fit\_SMOTE &    0.041 &        0.002 \\
@@ -156,17 +179,6 @@ The average runtime over all 27 datasets is shown in table~\ref{tab:runtimes}. T
     \caption{Runtime for 1:1 oversampling, averaged over all 27 datasets.}
     \label{tab:runtimes}
 \end{table}
-
-
-
--- overall view with boxplot and table
-
-
--- relation with size 
-
--- relation with features
-
--- 
 
 \begin{figure}[h!]
 \centering

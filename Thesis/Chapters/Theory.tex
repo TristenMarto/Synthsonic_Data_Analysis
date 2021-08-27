@@ -41,11 +41,42 @@ The next step is to combine the previously transformed numerical features with t
 \section{Discriminative learning}
 The Bayesian Network has modelled the dependencies between all features, but non-linear correlations can still be present. A classifier is used to model this last part of dependency. A new set is introduced, $X_{trans} = (X_{cat},X_{uniform}$, and is split into a 70\%/30\% train/test split. Then a sample of size $X_{trans}$ is generated from the Bayesian Network, called $X_{syn}$. The samples then receive a class label, where $X_{trans}$ is class 1 and $X_{syn}$ is class 0. The default classifier in synthsonic is XGBoost~\cite{Chen2016XGBoost:System}, and is trained to distinguish between the original training data $X_{trans}$ and the generated sample $X_{syn}$. The closer $X_{syn}$ is to the original distribution, the harder it is for the classifier to distinguish between a real and generated sample. However, if it manages to separate them, a better model must be formed. 
 
-xx
+\begin{figure}[htp]
+\centering
+\begin{subfigure}{0.3\textwidth}
+\centering
+    \includegraphics[width=\textwidth]{../Plots/Transformations/ring_joint_marginal_data.pdf}\quad
+\caption{$X_{num}$}
+\end{subfigure}
+\begin{subfigure}{0.3\textwidth}
+\centering
+    \includegraphics[width=\textwidth]{../Plots/Transformations/ring_joint_marginal_quantile.pdf}
+\caption{$X_{normal}$}
+\end{subfigure}
+\begin{subfigure}{0.3\textwidth}
+\centering
+    \includegraphics[width=\textwidth]{../Plots/Transformations/ring_joint_marginal_pca.pdf} \quad
+\caption{$X_{pca}$}
+\end{subfigure}
+\begin{subfigure}{0.3\textwidth}
+\centering
+    \includegraphics[width=\textwidth]{../Plots/Transformations/ring_joint_marginal_uniform.pdf}
+\caption{$X_{uni}$}
+\end{subfigure}
+\begin{subfigure}{0.3\textwidth}
+\centering
+    \includegraphics[width=\textwidth]{../Plots/Transformations/ring_discrete_uniform_bn_weights_annotated.pdf}\quad
+\caption{BN weights $X_{discrete}$}
+\end{subfigure}
+\begin{subfigure}{0.3\textwidth}
+\centering
+    \includegraphics[width=\textwidth]{../Plots/Transformations/ring_joint_marginal_with_sample_contours.pdf}
+\caption{$X_{num}$ and $X_{syn}$}
+\end{subfigure}
+\caption{Numerical transformations example on the ring dataset (a-d), (e) the Copula Bayesian network's weights  for discretized $X_{\rm uniform}$ and (f) a synthetic sample~\cite{AuthorSynthsonic:Data}}
+\label{fig:transformation}
+\end{figure}
 
-Plot from classification score distribution
-
-xx
 
 \section{Sampling strategy}
 Once Synthsonic has been trained on the data, new samples can be generated in five steps.
