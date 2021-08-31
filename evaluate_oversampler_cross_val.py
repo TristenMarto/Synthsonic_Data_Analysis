@@ -13,7 +13,7 @@ from imblearn.metrics import geometric_mean_score
 from sklearn.metrics import (recall_score, precision_score, precision_recall_curve,
                              f1_score, balanced_accuracy_score, auc)
 
-class cross_validation :
+class CrossValidation :
 
     def __init__(self,
                  kf = StratifiedKFold(n_splits=4, shuffle=True, random_state=5),
@@ -84,7 +84,9 @@ class cross_validation :
         y_real = np.concatenate(y_real)
         y_proba = np.concatenate(y_proba)
 
-        return precision_recall_curve(y_real, y_proba) 
+        precision, recall, thresholds = precision_recall_curve(y_real, y_proba) 
+
+        return precision, recall, thresholds
 
     def cross_validate_oversampler(self, X, y, dataset_name, oversampler, proportion) :
 

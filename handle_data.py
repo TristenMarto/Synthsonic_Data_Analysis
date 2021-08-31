@@ -1,7 +1,6 @@
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
-from collections import Counter
 from imblearn.datasets import fetch_datasets
 from sklearn.preprocessing import LabelEncoder, StandardScaler
 from sklearn.decomposition import PCA
@@ -18,28 +17,27 @@ class HandleData :
 
         return X, y_enc, title
 
-    def pca_plot(self, X, y) :
+    def pca_plot(self, X, y, title="") :
         
-        counter = Counter(y)
         x = StandardScaler().fit_transform(X)
-        pca = PCA(n_components=2)
-        principalComponents = pca.fit_transform(x)
-        principalDf = pd.DataFrame(data = principalComponents
-                    , columns = ['principal component 1', 'principal component 2'])
-        
-        fig = plt.figure(figsize = (12,7))
-        ax = fig.add_subplot(1,1,1) 
+        y = LabelEncoder().fit_transform(y)
+        principal_components = PCA(n_components=2).fit_transform(x)
+        labels,count = np.unique(y, return_counts=True)
+
+        f, ax = plt.subplots(figsize = (12,7))
         ax.set_xlabel('Principal Component 1')
         ax.set_ylabel('Principal Component 2')
-        ax.set_title(f'2 component PCA')
+        ax.set_title(f'2 component PCA {title}')
 
-        for label, _ in counter.items() :
-            rowix = np.where(y == label)[0]
-            ax.scatter(principalComponents[rowix, 0], principalComponents[rowix, 1], label=str(label))
+        for l in labels :
+            rowix = np.where(y==l)[0]
+            ax.scatter(principal_components[rowix,0]
+                    , principal_components[rowix,1]
+                    , label=f"Class {l}: {count[l]}"
+                    , color=f'C{l}')
 
         ax.legend()
-        fig.show()
-        print(counter)
+        plt.show()
 
     def divide_num_cat(self, X, threshold) :
 

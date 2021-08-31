@@ -51,7 +51,7 @@ class HandleResults :
 
     def first_places(self, df, metric) :
 
-        df2 = self.select_best(df, metric)
-        df2.loc[df2.groupby('dataset')[metric].idxmax()]
+        best = self.select_best(df, metric)
+        df2 = best.loc[best.groupby('dataset')[metric].idxmax()]
 
         return df2['oversampler'].value_counts().to_frame(metric)
