@@ -14,7 +14,7 @@ This leads to the final approach: data level preprocessing. This method involves
     \item \textbf{Oversampling:} creating a superset of the original dataset by replicating samples or creating new ones.
     \item \textbf{Hybrid methods:} Involve a combination of the undersampling and oversampling.
 \end{itemize}
-The simplest procedure is random undersampling and random overampling. The first method has the drawback that it potentially removes useful data. Alternatively, Random oversampling can increase the risk of oversampling, as the method makes exact copies of existing samples~\cite{Fernandez2018LearningSets}. Both undersampling and oversampling have been studied and many methods have been proposed. This thesis focuses on oversampling, specifically SMOTE-based oversamplers.
+The simplest procedure is random undersampling and random oversampling. The first method has the drawback that it potentially removes useful data. Alternatively, Random oversampling can increase the risk of oversampling, as the method makes exact copies of existing samples~\cite{Fernandez2018LearningSets}. Both undersampling and oversampling have been studied and many methods have been proposed. This thesis focuses on oversampling, specifically SMOTE-based oversamplers.
 
 \section{SMOTE algorithm}
 SMOTE is an acronym for Synthetic Minority Oversampling TEchnique. The method was first introduced by Chawla et al.~\cite{Chawla2002SMOTE:Technique} in 2002. The main idea is to introduce new, synthetic samples to the dataset to make it balanced. These samples are created by interpolation between samples of the minority class. 
@@ -42,13 +42,36 @@ The synthetic samples are then generated similarly to SMOTE.
 
 Another example is Borderline-SMOTE, which synthesizes minority samples near the decision boundary~\cite{Han2005Borderline-SMOTE:Learning}. This algorithm also considers the majority samples surrounding a minority sample. If a minority sample is surrounded by more majority samples than minority samples, it is marked as easily missclasified and added to a special set $D$. Once all minority samples are considered, the samples from $D$ are then oversampled in the same way as in regular SMOTE.
 
-Another SMOTE-based oversampler is ADASYN, an acronym for ADAptive SYNthetic sampling approach~\cite{He2008ADASYN:Learning}. ADASYN introduces a new learning constraint, where it uses the weighted distribution for different minority samples according to their difficulty in learning. More samples will be synthesized for samples that are harder to learn. Similar to Borderline-SMOTE, a sample surrounded by majority samples is considered harder to learn. However, ADASYN uses a density distribution for all minority samples to decide where to synthesize new samples.
+Another SMOTE-based oversampler is ADASYN, an acronym for ADAptive SYNthetic sampling approach~\cite{He2008ADASYN:Learning}. ADASYN introduces a new learning constraint, using the weighted distribution for different minority samples according to their difficulty in learning. More samples will be synthesized for samples that are harder to learn. Similar to Borderline-SMOTE, a sample surrounded by majority samples is considered harder to learn. However, ADASYN uses a density distribution for all minority samples to decide where to synthesize new samples.
 
+\begin{figure}
+  \begin{subfigure}[t]{.5\textwidth}
+    \centering
+    \includesvg[width=\linewidth]{../Plots/Dummy/PC_Plot_standard.svg}
+    \caption{Imbalanced dataset with no oversampling}
+  \end{subfigure}
+  \hfill
+  \begin{subfigure}[t]{.5\textwidth}
+    \centering
+    \includesvg[width=\linewidth]{../Plots/Dummy/PC_Plot_SMOTE.svg}
+    \caption{1:1 oversampling using SMOTE}
+  \end{subfigure}
 
-XXX
+  \medskip
 
-figure showing SMOTE oversampling on dummy dataset
+  \begin{subfigure}[t]{.5\textwidth}
+    \centering
+    \includesvg[width=\linewidth]{../Plots/Dummy/PC_Plot_BorderlineSMOTE.svg}
+    \caption{1:1 oversampling using BorderlineSMOTE}
+  \end{subfigure}
+  \hfill
+  \begin{subfigure}[t]{.5\textwidth}
+    \centering
+    \includesvg[width=\linewidth]{../Plots/Dummy/PC_Plot_ADASYN.svg}
+    \caption{1:1 oversampling using ADASYN}
+  \end{subfigure}
+\caption{PCA plots for a dummy imbalanced dataset. Subfigure b-d show a 1:1 oversampling ratio using different oversamplers.}
+\label{fig:oversampling}
+\end{figure}
 
-XXX
-
-Small bit about comparison figure SMOTE
+To illustrate this, a dummy dataset was created with a 99:1 imbalance ratio. Figure~\ref{fig:oversampling} shows the PCA plots of the original dataset, as well as the oversampled version using SMOTE, BorderlineSMOTE and ADASYN. Note that this is a strong exaggeration used to illustrate the difference between the techniques. SMOTE uses all available samples in the minority set to generate new samples, showing line-patterns between the edges of the data where new points are generated. This is not as prevalent in BorderlineSMOTE and ADASYN, as they focus on samples which are difficult to learn. As a result, the concentration of new samples is higher when they are closer to the majority set. While this is an exaggerated example, it does show that SMOTE algorithms are prone to 
