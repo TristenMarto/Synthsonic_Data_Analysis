@@ -1,9 +1,9 @@
 \lhead{\emph{Results}}
 
-10 oversamplers, including Synthsonic, were used in classifying 27 imbalanced datasets shown earlier in table~\ref{tab:df_info}. Due to the large amount of results, it is not feasible to discuss all details of oversampling. For comparison, the average results are shown for all datasets, but also per dataset type. The datasets are separated based on the number of categorical and numerical features in that dataset.
+Ten oversamplers, including Synthsonic, were used in classifying 27 imbalanced datasets shown earlier in table~\ref{tab:df_info}. Due to a large amount of results, it is not feasible to discuss all details of oversampling. A selection of results was made which gives insight into oversampling in general, and the performance of Synthsonic in particular. For comparison, the average results are shown for all datasets, but also for different subsets of datasets based on their characteristics, these will be introduced later in this section.
 
-\section{general oversampling}
-Each metric is the highest achieved by the oversampler on a dataset. Because all parameters were kept the same except for the proportion, it's therefore checked if certain oversamplers favour a certain proportion. To check this, the amounts were counted which achieved the highest score on all datasets, and the results are shown in table~\ref{tab:prop}. Overall, there is no preferred oversampler across all oversamplers, as all proportions were able to produce a highest score. Interesting to note is that a 1:1 ratio is not always the best for performance. In earlier sections it was described that classifiers prefer balanced classes, but it seems that evenly balanced classes are not always necessary. The results show that the best performance can also be achieved with a small oversampling proportion. Additionally, ADASYN and BorderlineSMOTE seem to perform better at lower proportions, both achieving the most high-scores with a 0.2 proportion. The other oversamplers achieve highest use a variety of all proportions to achieve the best scores. Most notable is SVMSMOTE, which achieved highest scores with all proportions except 0.4. 
+\section{The proportion parameter}
+Each metric is the highest achieved by the oversampler on a dataset. Because all parameters were kept the same except for the proportion, it's therefore checked if certain oversamplers favour a certain proportion. To check this, the amounts were counted which achieved the highest score on all datasets, and the results are shown in table~\ref{tab:prop}. Overall, there is no preferred oversampler across all oversamplers, as all proportions could produce a highest score. Interesting to note is that a 1:1 ratio is not always the best for performance. In earlier sections it was described that classifiers prefer balanced classes, but it seems that evenly balanced classes are not always necessary. The results show that the best performance can also be achieved with a small oversampling proportion. Additionally, ADASYN and BorderlineSMOTE seem to perform better at lower proportions, both achieving the most high-scores with a 0.2 proportion. The other oversamplers achieve highest use a variety of all proportions to achieve the best scores. Most notable is SVMSMOTE, which achieved highest scores with all proportions except 0.4. 
 
 The effect of the oversampling proportion was further studied by looking at the average proportion that produced the highest scores per dataset. 
 
@@ -27,32 +27,32 @@ The effect of the oversampling proportion was further studied by looking at the 
 
 
 \section{Ranking of oversamplers}
-In order to create a fair ranking over all datasets, the highest result per metrics was taken. Table~\ref{tab:ranking} overview of the performance over various datasets with different characteristics. The first assumption is that the base classifier without oversampling should perform the worst out of all on most metrics. The exception is precision, which is expected to be higher when there is a high amount of samples in the majority class. 
+In order to create a fair ranking over all datasets, the highest result per metrics was taken when using XGBoost. Table~\ref{tab:ranking} provides an overview of the performance on all datasets. ADASYN performs best on balanced accuracy and geometric mean, while SVMSMOTE has the highest f1 score and Synthsonic has the highest PR-AUC. A surprise is that Polynom\_fit\_SMOTE only reaches the top five in PR-AUC, as it was the best performing oversampler in the study of Kovacs et al.~\cite{Kovacs2019AnDatasets}. Additionally, ADASYN did not reach the top 10 in any metric in their study, while here it outperforms the other oversamplers. Lowest scores in table~\ref{tab:ranking} are achieved by the baseline performance and SMOTENC. SMOTENC performs significantly worse than other oversamplers, and even below the baseline performance on f1 score and PR-AUC. Overall, the differences between oversamplers is little. It shows that the original SMOTE algorithm performs well and that the adaptations do not guarantee a higher performance.
 
 \begin{table}[ht]
 \centering
     \resizebox{\textwidth}{!}{
-    \begin{tabular}{llrlrlrlrlrlr}
-    \toprule
-    {rank} &        Oversampler &  balanced\_accuracy &        Oversampler &    G\_mean &        Oversampler &        f1 &        Oversampler &  precision &        Oversampler &    recall &        Oversampler &    pr\_auc \\
-    \midrule
-    1  &             ADASYN &           0.798285 &             ADASYN &  0.729639 &           SVMSMOTE &  0.626186 &     NoOversampling &   0.699163 &             ADASYN &  0.614653 &         Synthsonic &  0.649430 \\
-    2  &              SMOTE &           0.797884 &              SMOTE &  0.729364 &             ADASYN &  0.623797 &  polynom\_fit\_SMOTE &   0.693186 &         Synthsonic &  0.614159 &           SVMSMOTE &  0.649420 \\
-    3  &         synthsonic &           0.797308 &         Synthsonic &  0.726812 &              SMOTE &  0.621968 &  RandomOversampler &   0.686230 &              SMOTE &  0.614040 &             ADASYN &  0.649238 \\
-    4  &           SVMSMOTE &           0.796564 &  RandomOversampler &  0.726309 &       Random\_SMOTE &  0.621696 &           SVMSMOTE &   0.681582 &  RandomOversampler &  0.613770 &  RandomOversampler &  0.648616 \\
-    5  &  RandomOversampler &           0.796323 &       Random\_SMOTE &  0.725619 &    BorderlineSMOTE &  0.620457 &       Random\_SMOTE &   0.679765 &       Random\_SMOTE &  0.609360 &  polynom\_fit\_SMOTE &  0.647145 \\
-    6  &       Random\_SMOTE &           0.795903 &           SVMSMOTE &  0.724931 &  RandomOversampler &  0.620094 &             ADASYN &   0.678240 &           SVMSMOTE &  0.608782 &              SMOTE &  0.647125 \\
-    7  &    BorderlineSMOTE &           0.794202 &    BorderlineSMOTE &  0.724181 &         synthsonic &  0.614133 &    BorderlineSMOTE &   0.675135 &    BorderlineSMOTE &  0.605111 &       Random\_SMOTE &  0.645629 \\
-    8  &  polynom\_fit\_SMOTE &           0.781970 &  polynom\_fit\_SMOTE &  0.697985 &  polynom\_fit\_SMOTE &  0.606298 &         synthsonic &   0.671432 &  polynom\_fit\_SMOTE &  0.576800 &    BorderlineSMOTE &  0.642862 \\
-    9  &            SMOTENC &           0.768076 &            SMOTENC &  0.693449 &     NoOversampling &  0.580367 &              SMOTE &   0.670155 &            SMOTENC &  0.564887 &     NoOversampling &  0.641915 \\
-    10 &     NoOversampling &           0.761715 &     NoOversampling &  0.653643 &            SMOTENC &  0.555265 &            SMOTENC &   0.582476 &     NoOversampling &  0.531739 &            SMOTENC &  0.571079 \\
-    \bottomrule
-    \end{tabular}}
-\caption{A ranking of oversamplers based on their average score of all datasets}
+\begin{tabular}{llrlrlrlr}
+\toprule
+{} &        Oversampler &  balanced\_accuracy &        Oversampler &  G\_mean &        Oversampler &      f1 &        Oversampler &  pr\_auc \\
+\midrule
+1  &             ADASYN &             \textbf{0.7983} & ADASYN &  \textbf{0.7296} & SVMSMOTE &  \textbf{0.6262} & synthsonic &  \textbf{0.6494} \\
+2  &              SMOTE &             0.7979 &              SMOTE &  0.7294 &             ADASYN &  0.6238 &           SVMSMOTE &  0.6494 \\
+3  &         synthsonic &             0.7973 &         synthsonic &  0.7268 &              SMOTE &  0.6220 &             ADASYN &  0.6492 \\
+4  &           SVMSMOTE &             0.7966 &  RandomOversampler &  0.7263 &       Random\_SMOTE &  0.6217 &  RandomOversampler &  0.6486 \\
+5  &  RandomOversampler &             0.7963 &       Random\_SMOTE &  0.7256 &    BorderlineSMOTE &  0.6205 &  polynom\_fit\_SMOTE &  0.6471 \\
+6  &       Random\_SMOTE &             0.7959 &           SVMSMOTE &  0.7249 &  RandomOversampler &  0.6201 &              SMOTE &  0.6471 \\
+7  &    BorderlineSMOTE &             0.7942 &    BorderlineSMOTE &  0.7242 &         synthsonic &  0.6141 &       Random\_SMOTE &  0.6456 \\
+8  &  polynom\_fit\_SMOTE &             0.7820 &  polynom\_fit\_SMOTE &  0.6980 &  polynom\_fit\_SMOTE &  0.6063 &    BorderlineSMOTE &  0.6429 \\
+9  &            SMOTENC &             0.7681 &            SMOTENC &  0.6934 &     NoOversampling &  0.5804 &     NoOversampling &  0.6419 \\
+10 &     NoOversampling &             0.7617 &     NoOversampling &  0.6536 &            SMOTENC &  0.5553 &            SMOTENC &  0.5711 \\
+\bottomrule
+\end{tabular}}
+\caption{A ranking of oversamplers based on their average score of all datasets using XGBoost.}
 \label{tab:ranking}
 \end{table}
 
-Next we can see from figure~\ref{fig:Total} that No oversampling scores the lowest on all metrics, in accordance with our predictions. 
+In addition, the reader can see from figure~\ref{fig:Total} that all oversamplers perform similarly, and the differences are minor. 
 
 \begin{figure}[htp]
 \centering
@@ -68,97 +68,121 @@ Next we can see from figure~\ref{fig:Total} that No oversampling scores the lowe
 \label{fig:Total}
 \end{figure}
 
-\section{Numerical datasets}
-The first subcategory of datasets are the ones with either only numerical features or a majority of them. This subset contains 17 datasets, the majority of the total 27. Regular SMOTE techniques are expected to perform better here as their techniques require continuous features to work. Figure~\ref{tab:num}. Again ADASYN scores well on balanced accuracy and Geometric mean 
+\section{Performance with K-nearest Neighbours classifier}
+The same experiments are also performed using a K-nearest Neighbours classifier with 3 and 5 nearest neighbours to validate the results. According to Kovacs et al.~\cite{Kovacs2019AnDatasets}, oversampling has a larger benefit with simpler models. Using XGBoost as a baseline performance resulted in minimal returns from oversampling, but this is not the case for KNN. Table ~\ref{tab:ranking_knn} shows that the difference between the baseline performance and oversampling is significant for balanced accuracy and geometric mean, but the difference in f1 and PR-AUC is smaller. These results do confirm that the performance between oversamplers is still similar, but the rankings have changed. ADASYN no longer ranks the highest in balanced accuracy and Geometric mean and drops to second place, while the Geometric mean score improves by 5,6\%. The baseline performance now shows that oversampling significantly improves the balanced accuracy and Geometric mean, with a similar relative improvement in f1 score as with XGBoost. Note that XGBoost scored a higher f1 score than k-nearest neighbours. The largest difference between the two classifiers is in the PR-AUC. Not only are the scores lower in table~\ref{tab:ranking_knn}, but oversampling performs worse than the baseline performance.
 
 \begin{table}[ht]
 \centering
-\resizebox{\textwidth}{!}{
-    \begin{tabular}{l|rr|rr|rr|rr|rr|rr}
-        \toprule
-        {} &  balanced accuracy &  std &  G\_mean & std &     f1 & std &  precision &  std &  recall &  std &  pr\_auc &  std \\
-        \midrule
-        ADASYN            &              0.758 &                  0.037 &   0.681 &       0.059 &  0.551 &   0.071 &      0.619 &          0.076 &   0.539 &       0.072 &   0.573 &       0.062 \\
-        SMOTE             &              0.758 &                  0.032 &   0.680 &       0.054 &  0.548 &   0.056 &      0.605 &          0.066 &   0.538 &       0.067 &   0.568 &       0.060 \\
-        SVMSMOTE          &              0.757 &                  0.037 &   0.674 &       0.067 &  0.555 &   0.070 &      0.626 &          0.073 &   0.532 &       0.073 &   0.574 &       0.058 \\
-        Random\_SMOTE      &              0.755 &                  0.030 &   0.675 &       0.051 &  0.547 &   0.050 &      0.619 &          0.093 &   0.532 &       0.060 &   0.564 &       0.057 \\
-        BorderlineSMOTE   &              0.753 &                  0.036 &   0.674 &       0.059 &  0.548 &   0.065 &      0.619 &          0.075 &   0.527 &       0.071 &   0.567 &       0.064 \\
-        RandomOversampler &              0.747 &                  0.037 &   0.649 &       0.057 &  0.542 &   0.063 &      0.647 &          0.087 &   0.512 &       0.074 &   0.573 &       0.052 \\
-        Synthsonic        &              0.747 &                  0.037 &   0.655 &       0.063 &  0.544 &   0.059 &      0.642 &          0.087 &   0.510 &       0.076 &   0.577 &       0.054 \\
-        polynom\_fit\_SMOTE &              0.738 &                  0.032 &   0.638 &       0.050 &  0.526 &   0.060 &      0.637 &          0.089 &   0.492 &       0.066 &   0.567 &       0.051 \\
-        SMOTENC           &              0.732 &                  0.041 &   0.643 &       0.075 &  0.489 &   0.063 &      0.522 &          0.092 &   0.497 &       0.081 &   0.493 &       0.057 \\
-        NoOversampling    &              0.711 &                  0.037 &   0.577 &       0.065 &  0.494 &   0.070 &      0.653 &          0.079 &   0.432 &       0.075 &   0.566 &       0.059 \\
-    \bottomrule
-    \end{tabular}}
-\caption{Scores per oversampler on datasets containing exclusively or a majority of numerical features.}
-\label{tab:num}
+    \resizebox{\textwidth}{!}{
+\begin{tabular}{llrlrlrlr}
+\toprule
+{} &        Oversampler &  balanced\_accuracy &        Oversampler &  G\_mean &        Oversampler &      f1 &        Oversampler &  pr\_auc \\
+\midrule
+1 &       Random\_SMOTE & \textbf{0.7917} & Random\_SMOTE &  \textbf{0.7705} &  RandomOverSampler &  \textbf{0.4692} & NoOversampler & \textbf{0.5166} \\
+2 &             ADASYN &             0.7882 &             ADASYN &  0.7656 &         synthsonic &  0.4663 &       Random\_SMOTE &  0.5099 \\
+3 &              SMOTE &             0.7861 &              SMOTE &  0.7628 &           SVMSMOTE &  0.4659 &  polynom\_fit\_SMOTE &  0.5084 \\
+4 &  polynom\_fit\_SMOTE &             0.7793 &    BorderlineSMOTE &  0.7384 &    BorderlineSMOTE &  0.4632 &    BorderlineSMOTE &  0.5054 \\
+5 &    BorderlineSMOTE &             0.7768 &  polynom\_fit\_SMOTE &  0.7351 &              SMOTE &  0.4481 &           SVMSMOTE &  0.5038 \\
+6 &           SVMSMOTE &             0.7677 &           SVMSMOTE &  0.7212 &       Random\_SMOTE &  0.4433 &              SMOTE &  0.5031 \\
+7 &         synthsonic &             0.7586 &         synthsonic &  0.7024 &             ADASYN &  0.4419 &         synthsonic &  0.5010 \\
+8 &  RandomOverSampler &             0.7512 &  RandomOverSampler &  0.6956 &  polynom\_fit\_SMOTE &  0.4313 &             ADASYN &  0.5005 \\
+9 &      NoOversampler &             0.6693 &      NoOversampler &  0.4794 &      NoOversampler &  0.4043 &  RandomOverSampler &  0.4885 \\
+\bottomrule
+\end{tabular}}
+\caption{A ranking of oversamplers based on their average score of all datasets using K-nearest neigbhours (k=5).}
+\label{tab:ranking_knn}
 \end{table}
 
-\section{Categorical datasets}
-The second subcategory of datasets are the ones with either exclusively or a large majority of categorical datasets. This includes nine of the total 27 datasets. Results are shown in table, after selecting the highest score per dataset  The assumption was that methods such as Synthsonic or ADASYN, which don't rely on a nearest neighbour principle, to perform better on this subset.
+The difference in f1 score and PR-AUC is caused by the shift in precision and recall, as shown in table~\ref{tab:prrecknn}. The results using XGBoost showed that recall increases due to oversampling, with a slight decrease in precision. This effect is amplified when K-nearest neighbours is used. The precision score drops by 40\% from the baseline performance to the lowest performer, polynom\_fit\_SMOTE, while the recall score is nearly doubled. The discrepancy between precision and recall affects the f1 score, the harmonic mean of precision and recall, and the area under the PR-curve. As mentioned earlier, the goal is to increase sensitivity to the minority class, without losing performance on the majority class.
 
-\begin{table}[ht]
+\begin{table}[h]
+\centering
+\resizebox{0.5\textwidth}{!}{
+\begin{tabular}{lrrrr}
+\toprule
+{} &  precision &  precision\_std &  recall &  recall\_std \\
+Oversampler       &            &                &         &             \\
+\midrule
+NoOversampler     &     0.5983 &         0.1108 &  0.3460 &      0.0445 \\
+synthsonic        &     0.4329 &         0.0320 &  0.5819 &      0.0615 \\
+RandomOverSampler &     0.4267 &         0.0375 &  0.5672 &      0.0582 \\
+SVMSMOTE          &     0.4031 &         0.0326 &  0.6120 &      0.0589 \\
+BorderlineSMOTE   &     0.3899 &         0.0305 &  0.6450 &      0.0570 \\
+SMOTE             &     0.3688 &         0.0248 &  0.6843 &      0.0596 \\
+ADASYN            &     0.3602 &         0.0265 &  0.6943 &      0.0617 \\
+Random\_SMOTE      &     0.3584 &         0.0243 &  0.7105 &      0.0598 \\
+polynom\_fit\_SMOTE &     0.3556 &         0.0261 &  0.6876 &      0.0466 \\
+\bottomrule
+\end{tabular}}
+    \caption{Average precision and recall scores for K-nearest neighbours classifier on all datasets ($k=5$).}
+    \label{tab:prrecknn}
+\end{table}
+
+\newpage
+The experiment was repeated with a K-nearest neighbours classifier with $k=3$, results in table~\ref{tab:rankingknn3} are similar to the results of $k=5$. The baseline performance is improved for all metrics, while the oversampling performance does not significantly change. The f1 score improves but is still below the performance of XGBoost. While oversampling does seem like a valid option for classifier improvement, the same effect can be achieved by selecting a better classifyer.
+
+\begin{table}[h]
 \centering
 \resizebox{\textwidth}{!}{
-    \begin{tabular}{l|rr|rr|rr|rr|rr|rr}
-        \toprule
-        {} &  balanced accuracy &  std &  G\_mean & std &     f1 & std &  precision &  std &  recall &  std &  pr\_auc &  std \\
-        \midrule
-        Synthsonic        &              0.882 &                  0.019 &   0.850 &       0.024 &  0.734 &   0.027 &      0.722 &          0.047 &   0.790 &       0.035 &   0.772 &       0.031 \\
-        RandomOversampler &              0.879 &                  0.022 &   0.857 &       0.030 &  0.752 &   0.033 &      0.752 &          0.049 &   0.786 &       0.044 &   0.776 &       0.029 \\
-        ADASYN            &              0.867 &                  0.020 &   0.812 &       0.036 &  0.748 &   0.041 &      0.779 &          0.051 &   0.744 &       0.038 &   0.780 &       0.028 \\
-        SMOTE             &              0.866 &                  0.020 &   0.813 &       0.036 &  0.748 &   0.039 &      0.781 &          0.055 &   0.744 &       0.040 &   0.781 &       0.031 \\
-        Random\_SMOTE      &              0.866 &                  0.020 &   0.811 &       0.035 &  0.749 &   0.038 &      0.784 &          0.055 &   0.741 &       0.037 &   0.784 &       0.028 \\
-        SVMSMOTE          &              0.864 &                  0.019 &   0.812 &       0.035 &  0.747 &   0.036 &      0.777 &          0.055 &   0.739 &       0.037 &   0.777 &       0.033 \\
-        BorderlineSMOTE   &              0.864 &                  0.020 &   0.809 &       0.036 &  0.743 &   0.035 &      0.771 &          0.049 &   0.737 &       0.040 &   0.772 &       0.035 \\
-        polynom\_fit\_SMOTE &              0.856 &                  0.020 &   0.801 &       0.035 &  0.742 &   0.033 &      0.788 &          0.053 &   0.721 &       0.041 &   0.784 &       0.032 \\
-        NoOversampling    &              0.847 &                  0.025 &   0.784 &       0.043 &  0.726 &   0.040 &      0.778 &          0.055 &   0.702 &       0.050 &   0.772 &       0.035 \\
-        SMOTENC           &              0.832 &                  0.030 &   0.782 &       0.037 &  0.671 &   0.050 &      0.688 &          0.073 &   0.684 &       0.057 &   0.708 &       0.055 \\
-    \bottomrule
-    \end{tabular}}
-\caption{Scores per oversampler on datasets containing exclusively or a majority of categorical features.}
-\label{tab:categorical}
-\end{table}
-
-The first observation is that SMOTE-NC performs poorly on these datasets, even scoring the lowest on F1-score, PR AUC and precision. Note that SMOTE-NC does not work on exclusively categorical features, and therefore only was used on three instead of nine datasets. Despite this, we want to portray how oversamplers perform in a wide variety of situations and try to find an overall best oversampler. For this reason the results of SMOTE-NC are included.
-
-Comparing these results to those of the total datasets, we can see that Synthsonic scores higher on balanced accuracy and Geometric mean when compared to the total results. This means that Synthsonic is able to discern true positives and true negatives better due to oversampling. This is also reflected in the highest score in recall on categorical datasets, but when comparing to the total results we see a higher drop in precision. 
-
-Contrary to the total results, there is a smaller trade-off between precision and recall.
-
-\section{Mixed datasets}
-
-
-\begin{table}[ht]
-\centering
-\resizebox{\textwidth}{!}{
-    \begin{tabular}{l|rr|rr|rr|rr|rr|rr}
-        \toprule
-        {} &  balanced accuracy &  std &  G\_mean & std &     f1 & std &  precision &  std &  recall &  std &  pr\_auc &  std \\
-        \midrule
-        SMOTE             &              0.771 &                  0.032 &   0.690 &       0.052 &  0.557 &   0.055 &      0.589 &          0.075 &   0.569 &       0.068 &   0.573 &       0.061 \\
-        ADASYN            &              0.771 &                  0.036 &   0.690 &       0.061 &  0.561 &   0.072 &      0.606 &          0.091 &   0.567 &       0.070 &   0.579 &       0.065 \\
-        SVMSMOTE          &              0.769 &                  0.034 &   0.689 &       0.056 &  0.560 &   0.064 &      0.593 &          0.078 &   0.562 &       0.067 &   0.568 &       0.064 \\
-        SMOTENC           &              0.768 &                  0.037 &   0.693 &       0.062 &  0.555 &   0.058 &      0.582 &          0.085 &   0.565 &       0.072 &   0.571 &       0.056 \\
-        Random\_SMOTE      &              0.766 &                  0.032 &   0.682 &       0.048 &  0.555 &   0.052 &      0.615 &          0.107 &   0.558 &       0.063 &   0.570 &       0.056 \\
-        BorderlineSMOTE   &              0.766 &                  0.036 &   0.683 &       0.058 &  0.551 &   0.060 &      0.577 &          0.070 &   0.557 &       0.074 &   0.559 &       0.066 \\
-        RandomOversampler &              0.764 &                  0.038 &   0.686 &       0.049 &  0.550 &   0.058 &      0.583 &          0.077 &   0.560 &       0.077 &   0.567 &       0.052 \\
-        Synthsonic        &              0.760 &                  0.042 &   0.670 &       0.063 &  0.543 &   0.058 &      0.585 &          0.079 &   0.542 &       0.086 &   0.574 &       0.057 \\
-        polynom\_fit\_SMOTE &              0.740 &                  0.035 &   0.636 &       0.048 &  0.532 &   0.057 &      0.609 &          0.084 &   0.498 &       0.071 &   0.572 &       0.061 \\
-        NoOversampling    &              0.726 &                  0.042 &   0.611 &       0.063 &  0.510 &   0.069 &      0.604 &          0.086 &   0.467 &       0.086 &   0.562 &       0.069 \\
-    \bottomrule
-    \end{tabular}}
-\caption{Scores per oversampler on datasets containing exclusively or a majority of categorical features.}
-\label{tab:mixed}
+\begin{tabular}{llrlrlrlr}
+\toprule
+{} &        Oversampler &  balanced\_accuracy &        Oversampler &  G\_mean &        Oversampler &      f1 &        Oversampler &  pr\_auc \\
+\midrule
+1 &       Random\_SMOTE & \textbf{0.7852} &       Random\_SMOTE &  \textbf{0.7613} & SVMSMOTE &  \textbf{0.4712} & Random\_SMOTE &  \textbf{0.5112} \\
+2 &             ADASYN &             0.7823 &             ADASYN &  0.7566 &  RandomOverSampler &  0.4687 &  polynom\_fit\_SMOTE &  0.5094 \\
+3 &              SMOTE &             0.7792 &              SMOTE &  0.7521 &    BorderlineSMOTE &  0.4683 &    BorderlineSMOTE &  0.5066 \\
+4 &  polynom\_fit\_SMOTE &             0.7770 &  polynom\_fit\_SMOTE &  0.7347 &         synthsonic &  0.4625 &              SMOTE &  0.5032 \\
+5 &    BorderlineSMOTE &             0.7693 &    BorderlineSMOTE &  0.7262 &              SMOTE &  0.4511 &           SVMSMOTE &  0.5024 \\
+6 &           SVMSMOTE &             0.7622 &           SVMSMOTE &  0.7123 &       Random\_SMOTE &  0.4468 &             ADASYN &  0.5023 \\
+7 &         synthsonic &             0.7535 &         synthsonic &  0.6913 &             ADASYN &  0.4463 &      NoOversampler &  0.5013 \\
+8 &  RandomOverSampler &             0.7351 &  RandomOverSampler &  0.6664 &  polynom\_fit\_SMOTE &  0.4403 &         synthsonic &  0.4991 \\
+9 &      NoOversampler &             0.6809 &      NoOversampler &  0.5216 &      NoOversampler &  0.4292 &  RandomOverSampler &  0.4838 \\
+\bottomrule
+\end{tabular}}
+    \caption{Caption}
+    \label{tab:rankingknn3}
 \end{table}
 
 
-\section{Runtime}
-This section discusses runtimes
+\section{Top oversamplers on different dataset types}
+The datasets in this study are divided according to their characteristics: by imbalance ratio (IR), number of minority class samples, number of features and feature type (numerical or categorical). These characteristics were highlighted in table~\ref{tab:df_info}. Thresholds are introduced to separate low ($IR < 20$) and high ($IR > 20$) IR, low ($N_{min} < 100$) and high ($N_{min} > 100$) number of minority samples, low  ($f < 40$)  and high ($f > 40$) number of features, numerical and categorical features, and low ($N < 1.000$) and high ($N > 1.000$) sample size. These thresholds are empirical and chosen for these specific datasets. For example, Alcala et al.~\cite{Alcala-Fdez2011KEELFramework} classify a dataset as highly imbalanced when $IR > 9$. This threshold would not provide any insights in this study, as it would classify all but one dataset as highly imbalanced. Therefore, thresholds are chosen so that they give insight in the performance on these particular datasets.
 
-The average runtime over all 27 datasets is shown in table~\ref{tab:runtimes}. These results are achieved by oversampling each dataset using a sampling strategy of 1, which means both classes contain an equal amount of samples. From the average runtimes it can be seen that the SMOTE-based oversamplers all have a comparable average runtime. The SMOTE-based oversamplers all average under 1 second for oversampling, with the exception of SMOTENC and SVMSMOTE. These oversamplers reached an average runtime of 1.395 seconds and 2.725 seconds respectively. From table~\ref{tab:runtimes} it can be seen that Synthsonic differs significantly from its counterparts. The average runtime was 86 seconds. This is largely due to a few outliers which result in exceptionally high runtimes. These peaks are also present in other oversamplers, as seen in figure~\ref{fig:runvfeat}. SMOTE-based oversamplers also suffer a hit in runtime, but are still able to stay far under the runtime of Synthsonic. Lastly, figure~\ref{fig:runvfeat} shows that the runtime of Synthsonic is affected by the amount of features in the dataset. These features need to be modeled into the Bayesian Network, which significantly adds to the total runtime.
+From the overall results in table~\ref{tab:ranking}, it became clear that the difference in scores between oversamplers is minor. Therefore, results are handled differently here. Instead of reporting the scores, oversamplers are ranked from $1^{st}$ to $10^{th}$ place based on the average of their performance. First, the average score per metric is calculated and are then ranked from best to worst. This is repeated for each metric, so that an oversampler has a rank for all metrics. These ranks are then averaged to produce a final average rank per subset of datasets. Rankings are easier to interpret than raw scores and allow the reader to quickly see what an oversampler's best performance is. The final results are shown in table~\ref{tab:subset_performance} 
+
+The first thing to observe is that there is no oversampler which manages to rank the highest on all subsets. Next, the baseline performance is often ranked among the lowest, but still outperformed some oversamplers on seven subsets. On two of those, it shared the last place with SMOTE-NC. Surprisingly, SMOTE-NC is often ranked the lowest but still achieved the a third and first place on low IR and high features datasets, making it a valid option on unseen datasets with these characteristics. Alternatively, ADASYN ranks highest on high IR, low $N_{min}$, numerical and low size datasets. Another thing to note is that SMOTE performs well on all subsets. It does not rank first, but consistently outperforms other SMOTE-variants. Even on categorical datasets, where SMOTE is not built for, it ranks second. Together with the results from table~\ref{tab:ranking} and figure~\ref{fig:Total}, it shows that regular SMOTE is a valid technique on various dataset types, and the benefit of SMOTE-variants is minor. Having said that, ADASYN performs relatively better, both in the total results as in the different subsets.
+
+Table~\ref{tab:subset_performance} also shows where Synthsonic outperforms other oversamplers. First, Synthsonic performs significantly better on datasets with a low IR, meaning that the classes are more balanced. Ranking first in low IR datasets does not translate to the same performance on more imbalanced datasets, as Synthsonic drops down to the sixth rank. For low $X_{min}$, low features and low size, synthsonic performs better than the higher alternatives. In other words, Synthsonic ranks higher on smaller datasets with fewer features. The Bayesian Network in Synthsonic attributes to the difference in performance on low and high feature datasets, as it captures the dependencies between all features. If the model is not optimal, or when dependencies are hard to find, the performance of Synthsonic will suffer. As the number of features increases, it also becomes harder to find an accurate network of the features. 
 
 \begin{table}[]
+\centering
+\resizebox{\textwidth}{!}{
+    \begin{tabular}{lrrrrrrrrrr}
+    \toprule
+    {} &  low IR &  high IR &  low $X_{min}$ &  high $X_{min}$ &  low features &  high features &  num &  cat &  low size &  high size \\
+    oversampler & $IR < 20$ & $IR > 20$ & $N_{min} < 100$  & $N_{min} > 100$ & $f < 40$ & $f > 40$ &          &      &  $N < 1.000$ & $N > 1.000$\\
+    \midrule
+    ADASYN            &       6 &        1 &            1 &             5 &             4 &              3 &    1 &    3 &         1 &          3 \\
+    BorderlineSMOTE   &       9 &        3 &            6 &             4 &             7 &              6 &    4 &    8 &         6 &          7 \\
+    No Oversampling    &      10 &        9 &           10 &             8 &             9 &             10 &    9 &    9 &         9 &          8 \\
+    RandomOversampler &       4 &        6 &            7 &             2 &             2 &              7 &    7 &    1 &         8 &          1 \\
+    Random\_SMOTE      &       7 &        4 &            4 &             7 &             6 &              5 &    6 &    3 &         3 &          6 \\
+    SMOTE             &       5 &        2 &            2 &             3 &             5 &              2 &    3 &    2 &         3 &          4 \\
+    SMOTENC           &       3 &       10 &            9 &            10 &            10 &              1 &    9 &   10 &         9 &         10 \\
+    SVMSMOTE          &       2 &        5 &            5 &             1 &             3 &              4 &    2 &    6 &         6 &          2 \\
+    Polynom\_fit\_SMOTE &       8 &        8 &            8 &             9 &             7 &              9 &    8 &    7 &         5 &          9 \\
+    Synthsonic        &       1 &        6 &            3 &             5 &             1 &              8 &    5 &    5 &         2 &          5 \\
+    \bottomrule
+    \end{tabular}}
+\caption{Ranking of oversamplers on different dataset types. The rank is averaged over all metrics for the datasets in that subset.}
+\label{tab:subset_performance}
+\end{table}
+
+\section{Runtime}
+The average runtime over all 27 datasets is shown in table~\ref{tab:runtimes}. These results are achieved by oversampling each dataset using a sampling strategy of 1, which means both classes contain an equal amount of samples. From the average runtimes it can be seen that the SMOTE-based oversamplers all have a comparable average runtime. The SMOTE-based oversamplers all average under 1 second for oversampling, with the exception of SMOTENC and SVMSMOTE. These oversamplers reached an average runtime of 1.395 seconds and 2.725 seconds respectively. From table~\ref{tab:runtimes} it can be seen that Synthsonic differs significantly from its counterparts. The average runtime was 86 seconds. This is largely due to a few outliers which result in exceptionally high runtimes. These peaks are also present in other oversamplers, as seen in figure~\ref{fig:runvfeat}. SMOTE-based oversamplers also suffer a hit in runtime, but are still able to stay far under the runtime of Synthsonic. Lastly, figure~\ref{fig:runvfeat} shows that the runtime of Synthsonic is affected by the amount of features in the dataset.
+
+Next, take a look at the spikes in runtime for SMOTE-based oversamplers in figure~\ref{fig:runvfeat}. While Synthsonic's runtime increases with the number of features, other oversamplers maintain a similar runtime over the datasets, with the exception of two big spikes. Also note that the runtimes are on a different scale, but all follow a similar pattern. The dataset responsible for the first big spike in runtime is called 'protein\_homo', the largest dataset in this study. Figure~\ref{fig:runvsize} shows the relation between the dataset size and the oversamplers' runtime, where the runtime rapidly increases for large datasets. However, keep in mind that the increase in runtime is significant on a relative scale, as the oversampling runtime is still under 5 seconds. 
+
+\begin{table}[h]
     \centering
     \begin{tabular}{lrr}
     \toprule
